@@ -1,0 +1,27 @@
+#interaction-bar {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+#interaction-buttons {
+    margin-top: 5px;
+    display: none;
+    /* 初始状态隐藏 */
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#interaction-buttons button {
+    display: block;
+    margin-bottom: 5px;
+    width: 100px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #555;
+    color: white;
+}

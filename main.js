@@ -4,7 +4,7 @@ import { scene, camera, renderer, controls } from './JS/sceneSetup.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets } from './JS/planets.js';
 import './JS/lighting.js';
-import { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow, MAX_STATUS, MIN_STATUS } from './JS/status.js';
+import { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 
 

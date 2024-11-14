@@ -1,3 +1,6 @@
+import { hungerSprite, hygieneSprite, happinessSprite } from './icons.js';
+import { camera } from './sceneSetup.js';
+
 let iconsToShow = []; // 当前需要显示的图标列表
 
 // 定义宠物的状态
@@ -85,4 +88,4 @@ function updateIconsDisplay(icons) {
     iconVisible = true; // 初始化为可见状态
 }
 
-export { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow };
+export { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS };

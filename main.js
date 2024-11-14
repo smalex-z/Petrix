@@ -2,7 +2,11 @@ import * as THREE from 'three';
 import { sheep } from './JS/pet.js'
 import { scene, camera, renderer, controls } from './JS/sceneSetup.js'; 
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
+import { planets } from './JS/planets.js';
 import './JS/lighting.js';
+import { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow } from './JS/status.js';
+import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
+
 
 
 // 全局变量
@@ -18,61 +22,10 @@ const blinkInterval = 500; // 闪烁间隔，单位为毫秒
 let lastBlinkTime = 0; // 上次切换可见性的时间
 let currentIconIndex = 0; // 当前显示的图标索引
 
-let planets = [];
 let clock = new THREE.Clock();
 let attachedObject = null;
 let blendingFactor = 0.1;
 // Create additional variables as needed here
-
-// Create orbiting planets
-const orbitDistance = 3; // 调整为更靠近中心的距离
-const planetSpeed = 0.02; // 设置它们的相同速度
-
-
-// TODO: Create the green
-let green_geom = new THREE.SphereGeometry(4, 32, 32);
-let green_material = new THREE.MeshBasicMaterial({ color: 0x32cd32 });
-let green = new THREE.Mesh(green_geom, green_material);
-green.position.set(0, -5, 0);
-scene.add(green);
-
-
-
-
-// 修改 sun 的位置和速度，代表太阳
-const sunGeom = new THREE.SphereGeometry(0.5, 16, 16);
-const sunMaterial = createPhongMaterial({
-    color: new THREE.Color(0xffff00),
-    ambient: 1.0,
-    diffusivity: 1.0,
-    specularity: 1.0,
-    smoothness: 100.0
-
-});
-const sun = new THREE.Mesh(sunGeom, sunMaterial);
-sun.position.set(orbitDistance, -3, 0); // Move yellow planet (sun) to the right
-scene.add(sun);
-
-// 修改 moon 的位置和速度，代表月亮
-const moonGeom = new THREE.SphereGeometry(0.5, 16, 16);
-const moonMaterial = createPhongMaterial({
-    color: new THREE.Color(0x0000D1),
-    ambient: 1.0,
-    diffusivity: 1.0,
-    specularity: 1.0,
-    smoothness: 100.0
-});
-const moon = new THREE.Mesh(moonGeom, moonMaterial);
-moon.position.set(-orbitDistance, -3, 0); // Set initial position to match green planet's Y position
-scene.add(moon);
-
-// 在 planets 数组中存储它们的初始角度，使它们相距 180°
-planets = [
-    { mesh: sun, distance: orbitDistance, speed: planetSpeed, initialAngle: Math.PI },    // 太阳，从 180° 开始
-    { mesh: moon, distance: orbitDistance, speed: planetSpeed, initialAngle: 0 }           // 月亮，从 0° 开始
-];
-
-
 
 
 
@@ -151,28 +104,6 @@ function adjustSheepHeight() {
     sheep.position.y = -5 + y + 0.2; // -5 是球的中心 Y 坐标，0.2 是羊离地面的高度
 }
 
-// 定义宠物的状态
-let petStatus = {
-    life: 100,         // 生命值，0-100
-    hunger: 0,       // 饥饿度，0-100
-    hygiene: 100,      // 卫生度，0-100
-    happiness: 100     // 快乐度，0-100
-};
-
-// 定义状态的最大值和最小值
-const MAX_STATUS = 100;
-const MIN_STATUS = 0;
-
-// 定义宠物的生命状态
-let petAlive = true;
-
-// 更新状态显示的函数
-function updatePetStatusDisplay() {
-    document.getElementById('life-status').textContent = petStatus.life.toFixed(0);
-    document.getElementById('hunger-status').textContent = petStatus.hunger.toFixed(0);
-    document.getElementById('hygiene-status').textContent = petStatus.hygiene.toFixed(0);
-    document.getElementById('happiness-status').textContent = petStatus.happiness.toFixed(0);
-}
 
 
 // 获取交互栏的元素
@@ -230,44 +161,6 @@ playButton.addEventListener('click', () => {
 });
 
 
-function updatePetStatus() {
-    if (!petAlive) return;
-
-    // 增加饥饿度
-    petStatus.hunger = Math.min(petStatus.hunger + 0.1, MAX_STATUS);
-
-    // 减少卫生度和快乐度
-    petStatus.hygiene = Math.max(petStatus.hygiene - 0.05, MIN_STATUS);
-    petStatus.happiness = Math.max(petStatus.happiness - 0.05, MIN_STATUS);
-
-    // 检查需要显示的图标
-    const newIconsToShow = [];
-
-    if (petStatus.hunger > 10) {
-        newIconsToShow.push(hungerSprite);
-    }
-    if (petStatus.hygiene < 90) {
-        newIconsToShow.push(hygieneSprite);
-    }
-    if (petStatus.happiness < 90) {
-        newIconsToShow.push(happinessSprite);
-    }
-
-    // 如果图标列表发生变化，更新图标显示
-    if (!arraysEqual(iconsToShow, newIconsToShow)) {
-        updateIconsDisplay(newIconsToShow);
-    }
-
-    updatePetStatusDisplay();
-}
-
-function arraysEqual(a, b) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-}
 
 let lifeDecreaseInterval = null; // 存储生命值减少的定时器
 
@@ -353,75 +246,6 @@ setInterval(updatePetStatus, 1000);
 updateLifeDecreaseInterval();
 
 
-// 创建纹理加载器
-const textureLoader = new THREE.TextureLoader();
-
-// 加载图标纹理
-const hungerTexture = textureLoader.load('images/hunger.png');
-const hygieneTexture = textureLoader.load('images/hygiene.png');
-const happinessTexture = textureLoader.load('images/happiness.png');
-
-// 创建 SpriteMaterial
-const hungerMaterial = new THREE.SpriteMaterial({ map: hungerTexture });
-const hygieneMaterial = new THREE.SpriteMaterial({ map: hygieneTexture });
-const happinessMaterial = new THREE.SpriteMaterial({ map: happinessTexture });
-
-// 创建 Sprite
-const hungerSprite = new THREE.Sprite(hungerMaterial);
-const hygieneSprite = new THREE.Sprite(hygieneMaterial);
-const happinessSprite = new THREE.Sprite(happinessMaterial);
-
-// 设置初始不可见
-hungerSprite.visible = false;
-hygieneSprite.visible = false;
-happinessSprite.visible = false;
-
-// 调整图标大小
-const iconScale = 1.5;
-hungerSprite.scale.set(iconScale, iconScale, iconScale);
-hygieneSprite.scale.set(iconScale, iconScale, iconScale);
-happinessSprite.scale.set(iconScale, iconScale, iconScale);
-
-// 将图标添加到羊的头上
-sheep.add(hungerSprite);
-sheep.add(hygieneSprite);
-sheep.add(happinessSprite);
-
-// 设置图标的位置（羊头的上方）
-const iconOffsetY = 2; // 根据羊的尺寸调整
-hungerSprite.position.set(0, iconOffsetY, 0);
-hygieneSprite.position.set(0, iconOffsetY, 0);
-happinessSprite.position.set(0, iconOffsetY, 0);
-
-// 定义变量
-
-let iconsToShow = []; // 当前需要显示的图标列表
-hungerSprite.renderOrder = 1;
-hygieneSprite.renderOrder = 1;
-happinessSprite.renderOrder = 1;
-
-function updateIconsDisplay(icons) {
-    iconsToShow = icons;
-
-    // 重置当前图标索引
-    currentIconIndex = 0;
-
-    // 隐藏所有图标
-    hungerSprite.visible = false;
-    hygieneSprite.visible = false;
-    happinessSprite.visible = false;
-
-    // 如果有图标需要显示，显示第一个
-    if (iconsToShow.length > 0) {
-        iconsToShow[currentIconIndex].visible = true;
-    }
-
-    // 重置闪烁计时器
-    lastBlinkTime = Date.now();
-    iconVisible = true; // 初始化为可见状态
-}
-
-
 
 // Handle window resize
 window.addEventListener('resize', onWindowResize, false);
@@ -430,123 +254,6 @@ window.addEventListener('resize', onWindowResize, false);
 document.addEventListener('keydown', onKeyDown, false);
 
 animate();
-
-
-// Custom Phong Shader has already been implemented, no need to make change.
-function createPhongMaterial(materialProperties) {
-    const numLights = 1;
-    // Vertex Shader
-    let vertexShader = `
-        precision mediump float;
-        const int N_LIGHTS = ${numLights};
-        uniform float ambient, diffusivity, specularity, smoothness;
-        uniform vec4 light_positions_or_vectors[N_LIGHTS];
-        uniform vec4 light_colors[N_LIGHTS];
-        uniform float light_attenuation_factors[N_LIGHTS];
-        uniform vec4 shape_color;
-        uniform vec3 squared_scale;
-        uniform vec3 camera_center;
-        varying vec3 N, vertex_worldspace;
-
-        // ***** PHONG SHADING HAPPENS HERE: *****
-        vec3 phong_model_lights(vec3 N, vec3 vertex_worldspace) {
-            vec3 E = normalize(camera_center - vertex_worldspace);
-            vec3 result = vec3(0.0);
-            for(int i = 0; i < N_LIGHTS; i++) {
-                vec3 surface_to_light_vector = light_positions_or_vectors[i].xyz - 
-                    light_positions_or_vectors[i].w * vertex_worldspace;
-                float distance_to_light = length(surface_to_light_vector);
-                vec3 L = normalize(surface_to_light_vector);
-                vec3 H = normalize(L + E);
-                float diffuse = max(dot(N, L), 0.0);
-                float specular = pow(max(dot(N, H), 0.0), smoothness);
-                float attenuation = 1.0 / (1.0 + light_attenuation_factors[i] * distance_to_light * distance_to_light);
-                vec3 light_contribution = shape_color.xyz * light_colors[i].xyz * diffusivity * diffuse
-                                        + light_colors[i].xyz * specularity * specular;
-                result += attenuation * light_contribution;
-            }
-            return result;
-        }
-
-        uniform mat4 model_transform;
-        uniform mat4 projection_camera_model_transform;
-
-        void main() {
-            gl_Position = projection_camera_model_transform * vec4(position, 1.0);
-            N = normalize(mat3(model_transform) * normal / squared_scale);
-            vertex_worldspace = (model_transform * vec4(position, 1.0)).xyz;
-        }
-    `;
-    // Fragment Shader
-    let fragmentShader = `
-        precision mediump float;
-        const int N_LIGHTS = ${numLights};
-        uniform float ambient, diffusivity, specularity, smoothness;
-        uniform vec4 light_positions_or_vectors[N_LIGHTS];
-        uniform vec4 light_colors[N_LIGHTS];
-        uniform float light_attenuation_factors[N_LIGHTS];
-        uniform vec4 shape_color;
-        uniform vec3 camera_center;
-        varying vec3 N, vertex_worldspace;
-
-        // ***** PHONG SHADING HAPPENS HERE: *****
-        vec3 phong_model_lights(vec3 N, vec3 vertex_worldspace) {
-            vec3 E = normalize(camera_center - vertex_worldspace);
-            vec3 result = vec3(0.0);
-            for(int i = 0; i < N_LIGHTS; i++) {
-                vec3 surface_to_light_vector = light_positions_or_vectors[i].xyz - 
-                    light_positions_or_vectors[i].w * vertex_worldspace;
-                float distance_to_light = length(surface_to_light_vector);
-                vec3 L = normalize(surface_to_light_vector);
-                vec3 H = normalize(L + E);
-                float diffuse = max(dot(N, L), 0.0);
-                float specular = pow(max(dot(N, H), 0.0), smoothness);
-                float attenuation = 1.0 / (1.0 + light_attenuation_factors[i] * distance_to_light * distance_to_light);
-                vec3 light_contribution = shape_color.xyz * light_colors[i].xyz * diffusivity * diffuse
-                                        + light_colors[i].xyz * specularity * specular;
-                result += attenuation * light_contribution;
-            }
-            return result;
-        }
-
-        void main() {
-            // Compute an initial (ambient) color:
-            vec4 color = vec4(shape_color.xyz * ambient, shape_color.w);
-            // Compute the final color with contributions from lights:
-            color.xyz += phong_model_lights(normalize(N), vertex_worldspace);
-            gl_FragColor = color;
-        }
-    `;
-
-    let shape_color = new THREE.Vector4(
-        materialProperties.color.r,
-        materialProperties.color.g,
-        materialProperties.color.b,
-        1.0
-    );
-    // Prepare uniforms
-    const uniforms = {
-        ambient: { value: materialProperties.ambient },
-        diffusivity: { value: materialProperties.diffusivity },
-        specularity: { value: materialProperties.specularity },
-        smoothness: { value: materialProperties.smoothness },
-        shape_color: { value: shape_color },
-        squared_scale: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
-        camera_center: { value: new THREE.Vector3() },
-        model_transform: { value: new THREE.Matrix4() },
-        projection_camera_model_transform: { value: new THREE.Matrix4() },
-        light_positions_or_vectors: { value: [] },
-        light_colors: { value: [] },
-        light_attenuation_factors: { value: [] }
-    };
-
-    // Create the ShaderMaterial using the custom vertex and fragment shaders
-    return new THREE.ShaderMaterial({
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        uniforms: uniforms
-    });
-}
 
 
 

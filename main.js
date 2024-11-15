@@ -6,6 +6,8 @@ import { planets } from './JS/planets.js';
 import './JS/lighting.js';
 import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
+import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
+
 
 
 
@@ -23,8 +25,6 @@ let lastBlinkTime = 0; // 上次切换可见性的时间
 let currentIconIndex = 0; // 当前显示的图标索引
 
 let clock = new THREE.Clock();
-let attachedObject = null;
-let blendingFactor = 0.1;
 // Create additional variables as needed here
 
 
@@ -251,7 +251,7 @@ updateLifeDecreaseInterval();
 window.addEventListener('resize', onWindowResize, false);
 
 // Handle keyboard input
-document.addEventListener('keydown', onKeyDown, false);
+document.addEventListener('keydown', (event) => handleCameraAttachment(event, planets), false);
 
 animate();
 
@@ -346,26 +346,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// TODO: Implement the camera attachment given the key being pressed
-// Hint: This step you only need to determine the object that are attached to and assign it to a variable you have to store the attached object.
-function onKeyDown(event) {
-    switch (event.key) {
-        case '3': // Attach camera to Planet 3
-            attachedObject = 0; // Index for Planet 3
-            controls.enabled = false;
-            break;
-        case '4': // Attach camera to Planet 4
-            attachedObject = 1; // Index for Planet 4
-            controls.enabled = false;
-            break;
-        case '0': // Detach camera and return to default view
-            attachedObject = null;
-            camera.position.set(0, 10, 20); // Default position
-            camera.lookAt(0, 0, 0); // Look at the origin
-            controls.enabled = true; // Enable orbit controls
-            break;
-    }
-}
 
 // Day and night system
 function updateBackgroundColor(angle, isDay) {
@@ -475,44 +455,11 @@ function animate() {
             updateBackgroundColor(angle - Math.PI, false); // 夜晚
         }
 
-
         updatePlanetMaterialUniforms(planet);
 
+        // Update the camera position based on attachment
+        updateCameraPosition(index, planet, model_transform);
 
-
-
-        // Camera attachment logic here, when certain planet is being attached, we want the camera to be following the planet by having the same transformation as the planet itself. No need to make changes.
-        if (attachedObject === index) {
-            let cameraTransform = new THREE.Matrix4();
-
-            // Copy the transformation of the planet (Hint: for the wobbling planet 3, you might have to rewrite to the model_tranform so that the camera won't wobble together)
-            cameraTransform.copy(model_transform);
-
-            // Add a translation offset of (0, 0, 10) in front of the planet
-            let offset = translationMatrix(0, 0, 10);
-            cameraTransform.multiply(offset);
-
-            // Apply the new transformation to the camera position
-            let cameraPosition = new THREE.Vector3();
-            cameraPosition.setFromMatrixPosition(cameraTransform);
-            camera.position.lerp(cameraPosition, blendingFactor);
-
-            // Make the camera look at the planet
-            let planetPosition = new THREE.Vector3();
-            planetPosition.setFromMatrixPosition(planet.matrix);
-            camera.lookAt(planetPosition);
-
-            // Disable controls
-            controls.enabled = false;
-            // TODO: If camera is detached, slowly lerp the camera back to the original position and look at the origin
-        } else if (attachedObject === null) {
-            let defaultPosition = new THREE.Vector3(0, 0, 0);
-            camera.position.lerp(defaultPosition, 0.1);
-            let lookAtPosition = new THREE.Vector3(0, 0, 0); // 摄像机稍微往下看
-            camera.lookAt(lookAtPosition);
-            // Enable controls
-            controls.enabled = true;
-        }
     });
 
 

@@ -4,7 +4,7 @@ import { scene, camera, renderer, controls } from './JS/sceneSetup.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets } from './JS/planets.js';
 import './JS/lighting.js';
-import { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS } from './JS/status.js';
+import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 
 
@@ -131,7 +131,7 @@ const playButton = document.getElementById('play-button');
 
 // 为按钮添加事件监听器
 feedButton.addEventListener('click', () => {
-    if (petAlive) {
+    if (petStatus.petAlive) {
         // 饥饿度恢复 5（减少饥饿度值 5）
         petStatus.hunger = Math.max(petStatus.hunger - 5, MIN_STATUS);
         // 生命值恢复 3
@@ -141,7 +141,7 @@ feedButton.addEventListener('click', () => {
 });
 
 cleanButton.addEventListener('click', () => {
-    if (petAlive) {
+    if (petStatus.petAlive) {
         // 卫生度恢复 5
         petStatus.hygiene = Math.min(petStatus.hygiene + 5, MAX_STATUS);
         // 生命值恢复 2
@@ -151,7 +151,7 @@ cleanButton.addEventListener('click', () => {
 });
 
 playButton.addEventListener('click', () => {
-    if (petAlive) {
+    if (petStatus.petAlive) {
         // 快乐度恢复 5
         petStatus.happiness = Math.min(petStatus.happiness + 5, MAX_STATUS);
         // 生命值恢复 1
@@ -194,12 +194,12 @@ function updateLifeDecreaseInterval() {
     // 如果间隔为 0，不需要减少生命值
     if (interval > 0) {
         lifeDecreaseInterval = setInterval(() => {
-            if (petAlive) {
+            if (petStatus.petAlive) {
                 petStatus.life = Math.max(petStatus.life - 1, MIN_STATUS);
 
                 // 如果生命值降为 0，宠物死亡
                 if (petStatus.life <= 0) {
-                    petAlive = false;
+                    petStatus.petAlive = false;
                     petDies();
                 }
 

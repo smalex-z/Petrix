@@ -8,15 +8,14 @@ let petStatus = {
     life: 100,         // 生命值，0-100
     hunger: 0,       // 饥饿度，0-100
     hygiene: 100,      // 卫生度，0-100
-    happiness: 100     // 快乐度，0-100
+    happiness: 100,     // 快乐度，0-100
+    petAlive: true,     // 定义宠物的生命状态
 };
 
 // 定义状态的最大值和最小值
 const MAX_STATUS = 100;
 const MIN_STATUS = 0;
 
-// 定义宠物的生命状态
-let petAlive = true;
 
 // 更新状态显示的函数
 function updatePetStatusDisplay() {
@@ -28,7 +27,7 @@ function updatePetStatusDisplay() {
 
 
 function updatePetStatus() {
-    if (!petAlive) return;
+    if (!petStatus.petAlive) return;
 
     // 增加饥饿度
     petStatus.hunger = Math.min(petStatus.hunger + 0.1, MAX_STATUS);
@@ -88,4 +87,4 @@ function updateIconsDisplay(icons) {
     iconVisible = true; // 初始化为可见状态
 }
 
-export { petStatus, petAlive, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS };
+export { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS };

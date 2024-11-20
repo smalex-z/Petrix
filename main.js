@@ -66,16 +66,16 @@ function moveSheep(distance) {
 
     const newPosition = sheep.position.clone().add(direction.multiplyScalar(distance));
 
-    const distanceFromCenter = newPosition.length();
+    const distanceFromCenter = Math.sqrt(newPosition.x ** 2 + newPosition.z ** 2);
 
     if (distanceFromCenter <= maxRadius) {
         targetPosition.copy(newPosition);
         isMoving = true;
     } else {
-        // 超出范围，转身并尝试再次移动
+        // Beyond the range, turn around and try to move again
         sheep.rotation.y += Math.PI;
 
-        // 重新计算新的方向和位置
+        // Calculate the new direction and location
         const adjustedDirection = new THREE.Vector3(0, 0, 1);
         adjustedDirection.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), sheep.rotation.y));
 
@@ -87,7 +87,7 @@ function moveSheep(distance) {
             targetPosition.copy(adjustedNewPosition);
             isMoving = true;
         } else {
-            // 如果仍然超出范围，不移动，但可以在下一次随机动作时尝试其他动作
+            // If it is still exceeded and does not move, you can try other actions in the next random action.
             isMoving = false;
         }
     }
@@ -101,7 +101,7 @@ function adjustSheepHeight() {
 
     const y = Math.sqrt(Math.max(0, radius * radius - x * x - z * z));
 
-    sheep.position.y = -5 + y + 0.2; // -5 是球的中心 Y 坐标，0.2 是羊离地面的高度
+    sheep.position.y = y + 0.2; //0.2 是羊离地面的高度
 }
 
 
@@ -231,7 +231,7 @@ function getHungerRange(hunger) {
 
 
 function petDies() {
-    alert('你的宠物已经死亡。');
+    alert('Your Pet has Died'); //TODO: death screen
     scene.remove(sheep);
 
     // 清除定时器
@@ -380,17 +380,13 @@ function animate() {
 
     let time = clock.getElapsedTime();
 
-
-
     if (time - lastActionTime > actionInterval) {
         performRandomAction();
         lastActionTime = time;
     }
 
 
-
-
-    // 更新羊的位置
+    // Update the location of sheep
     if (isMoving) {
         let delta = targetPosition.clone().sub(sheep.position);
         let distanceToTarget = delta.length();
@@ -404,7 +400,7 @@ function animate() {
             isMoving = false;
         }
     }
-    // 修改闪烁逻辑
+    // Modify the flashing logic
     if (iconsToShow.length > 0) {
         let now = Date.now();
         if (now - lastBlinkTime >= blinkInterval) {

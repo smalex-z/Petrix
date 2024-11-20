@@ -27,8 +27,8 @@ function handleCameraAttachment(event) {
 // Detach camera and reset to default view
 function detachCamera() {
     attachedObject = null;
-    camera.position.set(0, 10, 20); // Default position
-    camera.lookAt(0, 0, 0); // Look at the origin
+    camera.position.set(0, 14, 20); // Default position
+    camera.lookAt(0, 4, 0); // Look at the origin
     controls.enabled = true; // Enable orbit controls
 }
 
@@ -57,10 +57,10 @@ function updateCameraPosition(index, planet, model_transform) {
         // Disable controls
         controls.enabled = false;
         // TODO: If camera is detached, slowly lerp the camera back to the original position and look at the origin
-    } else if (attachedObject === null) {
-        let defaultPosition = new THREE.Vector3(0, 0, 0);
+    } else if (attachedObject === null & !controls.enabled) {
+        let defaultPosition = new THREE.Vector3(0, 14, 20);
         camera.position.lerp(defaultPosition, 0.1);
-        let lookAtPosition = new THREE.Vector3(0, 0, 0); // 摄像机稍微往下看
+        let lookAtPosition = new THREE.Vector3(0, 4, 0); // 摄像机稍微往下看
         camera.lookAt(lookAtPosition);
         // Enable controls
         controls.enabled = true;

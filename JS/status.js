@@ -1,5 +1,5 @@
 import { hungerSprite, hygieneSprite, happinessSprite } from './icons.js';
-import {iconIndex, lastBlinkTime, MIN_STATUS, MAX_STATUS} from './globalVar.js'
+import {iconIndex, blinkTime, MIN_STATUS, MAX_STATUS} from './globalVar.js'
 
 let iconsToShow = []; // 当前需要显示的图标列表
 
@@ -79,7 +79,7 @@ function updateIconsDisplay(icons) {
     }
 
     // Reset the flashmeter
-    lastBlinkTime = Date.now();
+    blinkTime.lastBlinkTime = Date.now();
     iconVisible = true; 
 }
 

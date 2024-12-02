@@ -5,7 +5,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 var iconIndex = {
     currentIconIndex: 0, // Store the value as a property of an object
 }
-var lastBlinkTime = 0; // 上次切换可见性的时间
+var blinkTime = {
+    lastBlinkTime: 0, // Store the value as a property of an object
+}
 
 
 // Planets
@@ -42,5 +44,5 @@ controls.enabled = true;
 controls.minDistance = 10;
 controls.maxDistance = 50;
 
-export { scene, camera, renderer, controls, defaultCamPos, defaultLook, lastBlinkTime, 
+export { scene, camera, renderer, controls, defaultCamPos, defaultLook, blinkTime, 
     iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS}

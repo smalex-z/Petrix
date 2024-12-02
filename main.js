@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls, earthRadius, lastBlinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js'; 
+import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js'; 
 
 import { sheep } from './JS/pet.js'
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
@@ -501,7 +501,7 @@ function animate() {
     // Modify the flashing logic
     if (iconsToShow.length > 0) {
         let now = Date.now();
-        if (now - lastBlinkTime >= blinkInterval) {
+        if (now - blinkTime.lastBlinkTime >= blinkInterval) {
             // 切换可见性
             if (iconsToShow[iconIndex.currentIconIndex].visible) {
                 // 当前图标可见，隐藏它
@@ -512,7 +512,7 @@ function animate() {
                 iconsToShow[iconIndex.currentIconIndex].visible = true;
             }
             // 重置计时器
-            lastBlinkTime = now;
+            blinkTime.lastBlinkTime = now;
         }
     }
     checkPetHouseInteraction();

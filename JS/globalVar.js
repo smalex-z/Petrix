@@ -7,11 +7,13 @@ var lastBlinkTime = 0; // 上次切换可见性的时间
 
 
 // Planets
-
+const earthRadius = 24;
+const orbitDistance = 80; // Adjust the distance closer to the center
+const planetSpeed = 0.2; // Set the default speed to .02, testing set to .2
 
 // Scene 
-var defaultCamPos = new THREE.Vector3(0, 25, 10);
-var defaultLook = new THREE.Vector3(0, 24, 0);
+var defaultCamPos = new THREE.Vector3(0, earthRadius + 3, 10);
+var defaultLook = new THREE.Vector3(0, earthRadius, 0);
 
 // Scene Setup
 
@@ -35,4 +37,5 @@ controls.enabled = true;
 controls.minDistance = 10;
 controls.maxDistance = 50;
 
-export { scene, camera, renderer, controls, defaultCamPos, defaultLook, lastBlinkTime, currentIconIndex,}
+export { scene, camera, renderer, controls, defaultCamPos, defaultLook, lastBlinkTime, 
+    currentIconIndex, earthRadius, orbitDistance, planetSpeed}

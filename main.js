@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls } from './JS/globalVar.js'; 
+import { scene, camera, renderer, controls, earthRadius } from './JS/globalVar.js'; 
 
 import { sheep } from './JS/pet.js'
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
@@ -96,9 +96,8 @@ function moveSheep(distance) {
 function adjustSheepHeight() {
     const x = sheep.position.x;
     const z = sheep.position.z;
-    const radius = 24; // 球的半径，与 green_geom 的半径一致
 
-    const y = Math.sqrt(Math.max(0, radius * radius - x * x - z * z));
+    const y = Math.sqrt(Math.max(0, earthRadius * earthRadius - x * x - z * z));
 
     sheep.position.y = y + 0.2; //0.2 是羊离地面的高度
 }

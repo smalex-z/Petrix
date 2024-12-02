@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls, earthRadius, lastBlinkTime, currentIconIndex } from './JS/globalVar.js'; 
+import { scene, camera, renderer, controls, earthRadius, lastBlinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js'; 
 
 import { sheep } from './JS/pet.js'
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
-import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS } from './JS/status.js';
+import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 
@@ -445,13 +445,13 @@ function animate() {
         let now = Date.now();
         if (now - lastBlinkTime >= blinkInterval) {
             // 切换可见性
-            if (iconsToShow[currentIconIndex].visible) {
+            if (iconsToShow[iconIndex.currentIconIndex].visible) {
                 // 当前图标可见，隐藏它
-                iconsToShow[currentIconIndex].visible = false;
+                iconsToShow[iconIndex.currentIconIndex].visible = false;
             } else {
                 // 当前图标不可见，切换到下一个图标并显示
-                currentIconIndex = (currentIconIndex + 1) % iconsToShow.length;
-                iconsToShow[currentIconIndex].visible = true;
+                iconIndex.currentIconIndex = (iconIndex.currentIconIndex + 1) % iconsToShow.length;
+                iconsToShow[iconIndex.currentIconIndex].visible = true;
             }
             // 重置计时器
             lastBlinkTime = now;

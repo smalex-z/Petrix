@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 //Main
-var currentIconIndex = 0; // 当前显示的图标索引
+var iconIndex = {
+    currentIconIndex: 0, // Store the value as a property of an object
+}
 var lastBlinkTime = 0; // 上次切换可见性的时间
 
 
@@ -15,7 +17,10 @@ const planetSpeed = 0.2; // Set the default speed to .02, testing set to .2
 var defaultCamPos = new THREE.Vector3(0, earthRadius + 3, 10);
 var defaultLook = new THREE.Vector3(0, earthRadius, 0);
 
-// Scene Setup
+// Status
+// 定义状态的最大值和最小值
+const MAX_STATUS = 100;
+const MIN_STATUS = 0;
 
 // sceneSetup.js
 
@@ -38,4 +43,4 @@ controls.minDistance = 10;
 controls.maxDistance = 50;
 
 export { scene, camera, renderer, controls, defaultCamPos, defaultLook, lastBlinkTime, 
-    currentIconIndex, earthRadius, orbitDistance, planetSpeed}
+    iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS}

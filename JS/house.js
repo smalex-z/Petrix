@@ -3,6 +3,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { scene, earthRadius, housePosition } from './globalVar.js';
 
 import { sheep } from './sheep';
+import { dog } from './dog';
+import { chicken } from './chickens.js';
+
+
 
 //Making a basic house on the planet 
 //NOT USED ATM
@@ -80,9 +84,22 @@ function adjustBlockHeight(block, earthRadius) {
 
 
 function checkPetHouseInteraction() {
-    const distanceToHouse = sheep.position.distanceTo(house.position);
+    const distanceToHouseSheep = sheep.position.distanceTo(house.position);
+    const distanceToHouseDog = dog.position.distanceTo(house.position);
+    const distanceToHouseChicken = chicken.position.distanceTo(house.position);
 
-    if (distanceToHouse < 2) { // Interaction range
+
+    if (distanceToHouseChicken < 2) { // Interaction range
+        console.log('Pet is near the house.');
+        // Example: Increase happiness or other stats
+        updatePetStatusDisplay();
+    }
+    if (distanceToHouseDog < 2) { // Interaction range
+        console.log('Pet is near the house.');
+        // Example: Increase happiness or other stats
+        updatePetStatusDisplay();
+    }
+    if (distanceToHouseSheep < 2) { // Interaction range
         console.log('Pet is near the house.');
         // Example: Increase happiness or other stats
         updatePetStatusDisplay();

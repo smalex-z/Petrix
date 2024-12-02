@@ -3,7 +3,7 @@ import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, M
 
 import { sheep } from './JS/sheep';
 import { dog } from './JS/dog';
-import { chicken } from './JS/chicken';
+import { chicken } from './JS/chickens.js';
 
 
 import { checkPetHouseInteraction } from './JS/house.js';

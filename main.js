@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js'; 
+import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js';
 
 import { sheep } from './JS/pet.js';
 import { checkPetHouseInteraction } from './JS/house.js';
@@ -369,7 +369,7 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 
         } else if (normalizedAngle >= 0.125 && normalizedAngle < .25) {
             // Midday (Light Blue to Bright Blue)
-            const middayIntensity = 1- (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
+            const middayIntensity = 1 - (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
             color = new THREE.Color(
                 0.1 + 0.4 * (middayIntensity), // R: Light blue to bright blue
                 0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
@@ -483,10 +483,10 @@ function animate() {
 
         // Calculate the position of the planet
         let angle = (initialAngle + speed * time) % (2 * Math.PI);
-        
+
         let orbitRotation = new THREE.Matrix4().makeRotationZ(angle);
         let translation = new THREE.Matrix4().makeTranslation(distance, 0, 0);
-        
+
         const tiltAngle = Math.PI / 4; // 45 degrees
         const rotAngle = Math.PI / 2;
 
@@ -494,18 +494,18 @@ function animate() {
         if (index === 0) { // Sun Rotation
             // Sun-specific orbit: Tilted at 45 degrees
             model_transform = new THREE.Matrix4()
-            .multiply(rotationMatrixY(-rotAngle))
-            .multiply(rotationMatrixX(tiltAngle))
-            .multiply(orbitRotation)
-            .multiply(translation);
+                .multiply(rotationMatrixY(-rotAngle))
+                .multiply(rotationMatrixX(tiltAngle))
+                .multiply(orbitRotation)
+                .multiply(translation);
         } else {
             // Moon-specific orbit: Tilted at -45 degrees
             // Combine tilt with the normal orbit rotation and translation
             model_transform = new THREE.Matrix4()
-            .multiply(rotationMatrixY(rotAngle))
-            .multiply(rotationMatrixX(tiltAngle))
-            .multiply(orbitRotation)
-            .multiply(translation);
+                .multiply(rotationMatrixY(rotAngle))
+                .multiply(rotationMatrixX(tiltAngle))
+                .multiply(orbitRotation)
+                .multiply(translation);
         }
         planet.matrix.copy(model_transform);
         planet.matrixAutoUpdate = false;
@@ -516,14 +516,14 @@ function animate() {
             planet.getWorldPosition(sunPosition);
 
             const sunY = sunPosition.y;
-            console.log((angle / (2* Math.PI)));
+            console.log((angle / (2 * Math.PI)));
 
             if (sunY > 0) {
                 // Daytime
-                updateBackgroundColor((angle / (2* Math.PI)), true);
+                updateBackgroundColor((angle / (2 * Math.PI)), true);
             } else {
                 // Nighttime
-                updateBackgroundColor((angle / (2* Math.PI)), false);
+                updateBackgroundColor((angle / (2 * Math.PI)), false);
             }
         }
 

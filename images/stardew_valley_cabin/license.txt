@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stardew valley Cabin
+* source:	https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1
+* author:	MoebiousII (https://sketchfab.com/MoebiousII)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stardew valley Cabin" (https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1) by MoebiousII (https://sketchfab.com/MoebiousII) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

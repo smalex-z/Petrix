@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js'; 
 
-import { sheep } from './JS/pet.js'
+import { sheep } from './JS/pet.js';
+import { checkPetHouseInteraction } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
 import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
+
 
 
 
@@ -210,58 +212,6 @@ function updateLifeDecreaseInterval() {
     }
 }
 
-//Making a house on the planet 
-function createHouse() {
-    const houseGroup = new THREE.Group();
-
-    // Create the base (walls)
-    const wallGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-    const walls = new THREE.Mesh(wallGeometry, wallMaterial);
-    walls.position.y = 0.5; // Raise walls to sit on the ground
-    houseGroup.add(walls);
-
-    // Create the roof
-    const roofGeometry = new THREE.ConeGeometry(0.75, 1, 4);
-    const roofMaterial = new THREE.MeshStandardMaterial({ color: 0xFF0000 });
-    const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-    roof.position.y = 1.5; // Place roof on top of walls
-    roof.rotation.y = Math.PI / 4; // Align the cone to form a pyramid
-    houseGroup.add(roof);
-
-    // Create the door
-    const doorGeometry = new THREE.BoxGeometry(0.3, 0.5, 0.1);
-    const doorMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
-    const door = new THREE.Mesh(doorGeometry, doorMaterial);
-    door.position.set(0, 0.25, 0.51); // Slightly in front of the wall
-    houseGroup.add(door);
-
-    return houseGroup;
-}
-
-
-const house = createHouse();
-house.position.set(2, 0, 2); // Adjust position as needed
-scene.add(house);
-
-function adjustHouseHeight(house, planetRadius) {
-    const x = house.position.x;
-    const z = house.position.z;
-    const y = Math.sqrt(Math.max(0, planetRadius ** 2 - x ** 2 - z ** 2));
-    house.position.y = y;
-}
-adjustHouseHeight(house, 16); // Assuming the planet's radius is 16
-
-
-function checkPetHouseInteraction() {
-    const distanceToHouse = sheep.position.distanceTo(house.position);
-
-    if (distanceToHouse < 1) { // Interaction range
-        console.log('Pet is near the house.');
-        // Example: Increase happiness or other stats
-        updatePetStatusDisplay();
-    }
-}
 
 
 function getHungerRange(hunger) {

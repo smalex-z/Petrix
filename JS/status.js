@@ -80,7 +80,6 @@ function updateIconsDisplay(icons) {
 
     // Reset the flashmeter
     blinkTime.lastBlinkTime = Date.now();
-    iconVisible = true; 
 }
 
 export { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow };

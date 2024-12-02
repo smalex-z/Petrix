@@ -97,7 +97,7 @@ function movePet(distance) {
             isMoving = true;
         } else {
             // If it is still exceeded and does not move, you can try other actions in the next random action.
-            isMoving = false;
+            chosenPet.rotation.y += Math.PI;
         }
     }
 }
@@ -441,17 +441,21 @@ function animate() {
 
     // Update the location of sheep
     if (isMoving) {
-        let delta = targetPosition.clone().sub(chosenPet.position);
-        let distanceToTarget = delta.length();
+        const delta = targetPosition.clone().sub(chosenPet.position);
+        const distanceToTarget = delta.length();
+    
         if (distanceToTarget > moveSpeed) {
+            // Normalize direction and move
             delta.normalize().multiplyScalar(moveSpeed);
             chosenPet.position.add(delta);
-            adjustPetHeight();
         } else {
+            // Snap to the target position
             chosenPet.position.copy(targetPosition);
-            adjustPetHeight();
-            isMoving = false;
+            isMoving = false; // Stop moving
         }
+    
+        // Adjust height based on the environment
+        adjustPetHeight();
     }
     // Modify the flashing logic
     if (iconsToShow.length > 0) {

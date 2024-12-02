@@ -347,12 +347,9 @@ function onWindowResize() {
 }
 
 
-//TODO: Charles Adjust the color (especially for early day, midday, and late day)
 // Day and night system
 function updateBackgroundColor(normalizedAngle, isDay) {
     let color;
-
-    console.log(normalizedAngle)
 
     if (isDay) {
         // Daytime logic
@@ -382,7 +379,6 @@ function updateBackgroundColor(normalizedAngle, isDay) {
                 0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
                 0.35 + 0.6 * (middayIntensity)  // B: Light blue to bright blue
             );
-            console.log(color)
         } else if (normalizedAngle <= -.5 && normalizedAngle > -1) {
             // late day (light pink to orange)
             const middayIntensity = 1 - Math.abs((0.5 + normalizedAngle) / 0.5); // Normalize to fade from 0 to 1
@@ -391,7 +387,6 @@ function updateBackgroundColor(normalizedAngle, isDay) {
                 0.25 - .05 * (middayIntensity), // G: Light green to bright green
                 0.1 + 0.15 * (middayIntensity)  // B: Light blue to bright blue
             );
-            console.log(color)
         }
          else {
             
@@ -405,7 +400,6 @@ function updateBackgroundColor(normalizedAngle, isDay) {
                 0.25 * (lateDayIntensity), // G: Fade green
                 0.1 * (lateDayIntensity)  // B: Fade blue
             );
-            console.log(color)
         } else{
             // Nighttime logic
             color = new THREE.Color(

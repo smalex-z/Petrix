@@ -6,13 +6,13 @@ import { scene } from './sceneSetup.js';
 let planets = [];
 
 // Create orbiting planets
-const orbitDistance = 10; // Adjust the distance closer to the center
+const orbitDistance = 50; // Adjust the distance closer to the center
 const planetSpeed = 0.2; // Set the same speed default speed: .02, testing set to .1
 
 
 
 // TODO: Create the green
-let green_geom = new THREE.SphereGeometry(4, 32, 32);
+let green_geom = new THREE.SphereGeometry(16, 32, 32);
 let green_material = new THREE.MeshBasicMaterial({ color: 0x32cd32 });
 let green = new THREE.Mesh(green_geom, green_material);
 green.position.set(0, 0, 0);
@@ -20,7 +20,7 @@ scene.add(green);
 
 
 // 修改 sun 的位置和速度，代表太阳
-const sunGeom = new THREE.SphereGeometry(0.5, 16, 16);
+const sunGeom = new THREE.SphereGeometry(4, 64, 64);
 const sunMaterial = createPhongMaterial({
     color: new THREE.Color(0xffff00),
     ambient: 1.0,

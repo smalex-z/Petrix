@@ -50,7 +50,7 @@ tail.position.set(-1.1, -0.8, 0);
 sheep.add(tail);
 
 // 设置羊的整体位置
-sheep.position.set(0, 4.3, 0); // 放置在地面上
+sheep.position.set(0, 16.3, 0); // 放置在地面上
 
 // 将羊添加到场景中
 scene.add(sheep);

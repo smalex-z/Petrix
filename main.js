@@ -97,7 +97,7 @@ function moveSheep(distance) {
 function adjustSheepHeight() {
     const x = sheep.position.x;
     const z = sheep.position.z;
-    const radius = 4; // 球的半径，与 green_geom 的半径一致
+    const radius = 16; // 球的半径，与 green_geom 的半径一致
 
     const y = Math.sqrt(Math.max(0, radius * radius - x * x - z * z));
 
@@ -417,6 +417,11 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 
 
 function animate() {
+    console.log(`Camera Position: x=${camera.position.x}, y=${camera.position.y}, z=${camera.position.z}`);
+    const cameraDirection = new THREE.Vector3();
+camera.getWorldDirection(cameraDirection);
+console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z=${cameraDirection.z}`);
+
     requestAnimationFrame(animate);
 
     let time = clock.getElapsedTime();
@@ -489,9 +494,6 @@ function animate() {
     
             const sunX = sunPosition.x;
             const sunY = sunPosition.y;
-
-            console.log(sunY + " X:" + sunX);
-
     
             if (sunY > 0) {
                 // Daytime

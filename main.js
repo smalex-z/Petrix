@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { sheep } from './JS/pet.js'
-import { scene, camera, renderer, controls } from './JS/sceneSetup.js'; 
+import { scene, camera, renderer, controls } from './JS/sceneSetup.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
@@ -26,6 +26,9 @@ let currentIconIndex = 0; // 当前显示的图标索引
 
 let clock = new THREE.Clock();
 // Create additional variables as needed here
+
+
+
 
 
 
@@ -209,6 +212,60 @@ function updateLifeDecreaseInterval() {
     }
 }
 
+//Making a house on the planet 
+function createHouse() {
+    const houseGroup = new THREE.Group();
+
+    // Create the base (walls)
+    const wallGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+    const walls = new THREE.Mesh(wallGeometry, wallMaterial);
+    walls.position.y = 0.5; // Raise walls to sit on the ground
+    houseGroup.add(walls);
+
+    // Create the roof
+    const roofGeometry = new THREE.ConeGeometry(0.75, 1, 4);
+    const roofMaterial = new THREE.MeshStandardMaterial({ color: 0xFF0000 });
+    const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+    roof.position.y = 1.5; // Place roof on top of walls
+    roof.rotation.y = Math.PI / 4; // Align the cone to form a pyramid
+    houseGroup.add(roof);
+
+    // Create the door
+    const doorGeometry = new THREE.BoxGeometry(0.3, 0.5, 0.1);
+    const doorMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
+    const door = new THREE.Mesh(doorGeometry, doorMaterial);
+    door.position.set(0, 0.25, 0.51); // Slightly in front of the wall
+    houseGroup.add(door);
+
+    return houseGroup;
+}
+
+
+const house = createHouse();
+house.position.set(2, 0, 2); // Adjust position as needed
+scene.add(house);
+
+function adjustHouseHeight(house, planetRadius) {
+    const x = house.position.x;
+    const z = house.position.z;
+    const y = Math.sqrt(Math.max(0, planetRadius ** 2 - x ** 2 - z ** 2));
+    house.position.y = y;
+}
+adjustHouseHeight(house, 16); // Assuming the planet's radius is 16
+
+
+function checkPetHouseInteraction() {
+    const distanceToHouse = sheep.position.distanceTo(house.position);
+
+    if (distanceToHouse < 1) { // Interaction range
+        console.log('Pet is near the house.');
+        // Example: Increase happiness or other stats
+        updatePetStatusDisplay();
+    }
+}
+
+
 function getHungerRange(hunger) {
     if (hunger >= 0 && hunger <= 10) {
         return 1;
@@ -388,8 +445,8 @@ function updateBackgroundColor(normalizedAngle, isDay) {
                 0.1 + 0.15 * (middayIntensity)  // B: Light blue to bright blue
             );
         }
-         else {
-            
+        else {
+
         }
     } else {
         if (normalizedAngle <= -.75 && normalizedAngle > -1) {
@@ -400,7 +457,7 @@ function updateBackgroundColor(normalizedAngle, isDay) {
                 0.25 * (lateDayIntensity), // G: Fade green
                 0.1 * (lateDayIntensity)  // B: Fade blue
             );
-        } else{
+        } else {
             // Nighttime logic
             color = new THREE.Color(
                 0,
@@ -419,8 +476,8 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 function animate() {
     console.log(`Camera Position: x=${camera.position.x}, y=${camera.position.y}, z=${camera.position.z}`);
     const cameraDirection = new THREE.Vector3();
-camera.getWorldDirection(cameraDirection);
-console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z=${cameraDirection.z}`);
+    camera.getWorldDirection(cameraDirection);
+    console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z=${cameraDirection.z}`);
 
     requestAnimationFrame(animate);
 
@@ -430,6 +487,7 @@ console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z
         performRandomAction();
         lastActionTime = time;
     }
+
 
 
     // Update the location of sheep
@@ -463,6 +521,7 @@ console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z
             lastBlinkTime = now;
         }
     }
+    checkPetHouseInteraction();
 
     // 更新图标的朝向，使其面向摄像机
     [hungerSprite, hygieneSprite, happinessSprite].forEach(sprite => {
@@ -473,28 +532,28 @@ console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z
     // TODO: Loop through all the orbiting planets and apply transformation to create animation effect
     planets.forEach(function (obj, index) {
         let planet = obj.mesh;
-    
+
         let distance = obj.distance;
         let speed = obj.speed;
         let initialAngle = obj.initialAngle;
-    
+
         // Calculate the position of the planet
         let angle = (initialAngle + speed * time) % (2 * Math.PI);
         let orbitRotation = new THREE.Matrix4().makeRotationZ(angle);
         let translation = new THREE.Matrix4().makeTranslation(distance, 0, 0);
         let model_transform = new THREE.Matrix4().multiplyMatrices(orbitRotation, translation);
-    
+
         planet.matrix.copy(model_transform);
         planet.matrixAutoUpdate = false;
-    
+
         // Get the transformed position of the sun
         if (index === 0) { // Only check for the sun
             let sunPosition = new THREE.Vector3();
             planet.getWorldPosition(sunPosition);
-    
+
             const sunX = sunPosition.x;
             const sunY = sunPosition.y;
-    
+
             if (sunY > 0) {
                 // Daytime
                 updateBackgroundColor((sunX / distance), true);
@@ -503,9 +562,9 @@ console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z
                 updateBackgroundColor((sunX / distance), false);
             }
         }
-    
+
         updatePlanetMaterialUniforms(planet);
-    
+
         // Update the camera position based on attachment
         updateCameraPosition(index, planet, model_transform);
     });
@@ -520,4 +579,4 @@ console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z
     renderer.render(scene, camera);
 }
 
-export { scene, lastBlinkTime, currentIconIndex}
+export { scene, lastBlinkTime, currentIconIndex }

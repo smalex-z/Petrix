@@ -13,11 +13,11 @@ var blinkTime = {
 // Planets
 const earthRadius = 24;
 const orbitDistance = 80; // Adjust the distance closer to the center
-const planetSpeed = 0.2; // Set the default speed to .02, testing set to .2
+const planetSpeed = 0.4; // Set the default speed to .02, testing set to .2
 
 // Scene 
-var defaultCamPos = new THREE.Vector3(0, earthRadius + 3, 10);
-var defaultLook = new THREE.Vector3(0, earthRadius, 0);
+var defaultCamPos = new THREE.Vector3(0, earthRadius + 4, 10);
+var defaultLook = new THREE.Vector3(0, earthRadius + 1, 0);
 const housePosition = new THREE.Vector3(4, 0, 0); //Don't Touch Y value
 
 // Status

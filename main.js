@@ -358,35 +358,35 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 
     if (isDay) {
         // Daytime logic
-        if (normalizedAngle > 0.75) {
+        if (normalizedAngle < 0.125) {
             // Early Day (Soft Blue)
-            const intensity = Math.abs((normalizedAngle - 1) / 0.25); // Normalize from 0 to 1
+            const intensity = Math.abs((normalizedAngle) / 0.125); // Normalize from 0 to 1
             color = new THREE.Color(
                 0.1 * intensity, // R: Increase red component for light blue
                 0.2 * intensity, // G: Increase green component for light blue
                 0.3 * intensity  // B: Increase blue component for light blue
             );
 
-        } else if (normalizedAngle <= 0.75 && normalizedAngle > 0) {
+        } else if (normalizedAngle >= 0.125 && normalizedAngle < .25) {
             // Midday (Light Blue to Bright Blue)
-            const middayIntensity = (0.75 - normalizedAngle) / 0.75; // Normalize to fade from 0 to 1
+            const middayIntensity = 1- (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
             color = new THREE.Color(
                 0.1 + 0.4 * (middayIntensity), // R: Light blue to bright blue
                 0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
                 0.3 + 0.65 * (middayIntensity)  // B: Light blue to bright blue
             );
 
-        } else if (normalizedAngle <= 0 && normalizedAngle > -.5) {
+        } else if (normalizedAngle >= .25 && normalizedAngle < .375) {
             // Mid to late day (Bright Blue to light pink)
-            const middayIntensity = Math.abs((0.5 + normalizedAngle) / 0.5); // Normalize to fade from 0 to 1
+            const middayIntensity = Math.abs((0.375 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
             color = new THREE.Color(
                 0.5 + 0 * (middayIntensity), // R: Light blue to bright blue
                 0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
                 0.35 + 0.6 * (middayIntensity)  // B: Light blue to bright blue
             );
-        } else if (normalizedAngle <= -.5 && normalizedAngle > -1) {
+        } else if (normalizedAngle >= .375 && normalizedAngle < .5) {
             // late day (light pink to orange)
-            const middayIntensity = 1 - Math.abs((0.5 + normalizedAngle) / 0.5); // Normalize to fade from 0 to 1
+            const middayIntensity = Math.abs((0.5 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
             color = new THREE.Color(
                 0.7 - .2 * (middayIntensity), // R: Light blue to bright blue
                 0.25 - .05 * (middayIntensity), // G: Light green to bright green
@@ -397,9 +397,9 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 
         }
     } else {
-        if (normalizedAngle <= -.75 && normalizedAngle > -1) {
+        if (normalizedAngle >= .5 && normalizedAngle < .625) {
             // Late Day (orange to black)
-            const lateDayIntensity = 1 - Math.abs((1 + normalizedAngle) / 0.25); // Normalize to fade from 0 to 1
+            const lateDayIntensity = Math.abs((.625 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
             color = new THREE.Color(
                 .7 * (lateDayIntensity),   // R: Constant for warm yellow
                 0.25 * (lateDayIntensity), // G: Fade green
@@ -515,15 +515,15 @@ function animate() {
             let sunPosition = new THREE.Vector3();
             planet.getWorldPosition(sunPosition);
 
-            const sunX = sunPosition.x;
             const sunY = sunPosition.y;
+            console.log((angle / (2* Math.PI)));
 
             if (sunY > 0) {
                 // Daytime
-                updateBackgroundColor((sunX / distance), true);
+                updateBackgroundColor((angle / (2* Math.PI)), true);
             } else {
                 // Nighttime
-                updateBackgroundColor((sunX / distance), false);
+                updateBackgroundColor((angle / (2* Math.PI)), false);
             }
         }
 

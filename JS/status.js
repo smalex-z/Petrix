@@ -1,6 +1,5 @@
 import { hungerSprite, hygieneSprite, happinessSprite } from './icons.js';
-import { lastBlinkTime, currentIconIndex } from '../main.js';
-import { camera } from './sceneSetup.js';
+import './globalVar.js'
 
 let iconsToShow = []; // 当前需要显示的图标列表
 

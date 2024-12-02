@@ -1,18 +1,18 @@
 import * as THREE from 'three';
+import { scene } from './globalVar.js'
 import { createPhongMaterial } from './shaders.js';
-import { scene } from './sceneSetup.js';
 
 
 let planets = [];
 
 // Create orbiting planets
-const orbitDistance = 50; // Adjust the distance closer to the center
+const orbitDistance = 80; // Adjust the distance closer to the center
 const planetSpeed = 0.2; // Set the same speed default speed: .02, testing set to .1
 
 
 
 // TODO: Create the green
-let green_geom = new THREE.SphereGeometry(16, 32, 32);
+let green_geom = new THREE.SphereGeometry(24, 32, 32);
 let green_material = new THREE.MeshBasicMaterial({ color: 0x32cd32 });
 let green = new THREE.Mesh(green_geom, green_material);
 green.position.set(0, 0, 0);

@@ -1,5 +1,5 @@
 // cameraControl.js
-import { camera, controls } from './sceneSetup.js';
+import { camera, controls } from './globalVar.js';
 import { translationMatrix } from './utils.js';
 import * as THREE from 'three';
 

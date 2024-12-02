@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { scene, camera, renderer, controls } from './JS/globalVar.js'; 
+
 import { sheep } from './JS/pet.js'
-import { scene, camera, renderer, controls } from './JS/sceneSetup.js'; 
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
@@ -21,8 +22,6 @@ const moveSpeed = 0.05; // 羊移动的速度
 let isMoving = false; // 羊是否正在移动
 let targetPosition = new THREE.Vector3(); // 目标位置
 const blinkInterval = 500; // 闪烁间隔，单位为毫秒
-let lastBlinkTime = 0; // 上次切换可见性的时间
-let currentIconIndex = 0; // 当前显示的图标索引
 
 let clock = new THREE.Clock();
 // Create additional variables as needed here
@@ -97,7 +96,7 @@ function moveSheep(distance) {
 function adjustSheepHeight() {
     const x = sheep.position.x;
     const z = sheep.position.z;
-    const radius = 16; // 球的半径，与 green_geom 的半径一致
+    const radius = 24; // 球的半径，与 green_geom 的半径一致
 
     const y = Math.sqrt(Math.max(0, radius * radius - x * x - z * z));
 
@@ -417,10 +416,6 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 
 
 function animate() {
-    console.log(`Camera Position: x=${camera.position.x}, y=${camera.position.y}, z=${camera.position.z}`);
-    const cameraDirection = new THREE.Vector3();
-camera.getWorldDirection(cameraDirection);
-console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z=${cameraDirection.z}`);
 
     requestAnimationFrame(animate);
 
@@ -519,5 +514,3 @@ console.log(`Camera Direction: x=${cameraDirection.x}, y=${cameraDirection.y}, z
 
     renderer.render(scene, camera);
 }
-
-export { scene, lastBlinkTime, currentIconIndex}

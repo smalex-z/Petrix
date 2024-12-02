@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene } from './sceneSetup.js';
+import { scene } from './globalVar.js'
 
 // 添加环境光
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);

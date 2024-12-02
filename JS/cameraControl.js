@@ -55,7 +55,6 @@ function updateCameraPosition(index, planet, model_transform) {
 
         // Disable controls
         controls.enabled = false;
-        // TODO: If camera is detached, slowly lerp the camera back to the original position and look at the origin
     } else if (attachedObject === null & !controls.enabled) {
         camera.position.lerp(defaultCamPos, 0.1);
         camera.lookAt(defaultLook);

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { sheep } from './JS/pet.js'
 import { scene, camera, renderer, controls } from './JS/sceneSetup.js'; 
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
-import { planets } from './JS/planets.js';
+import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
 import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
@@ -347,31 +347,78 @@ function onWindowResize() {
 }
 
 
+//TODO: Charles Adjust the color (especially for early day, midday, and late day)
 // Day and night system
-function updateBackgroundColor(angle, isDay) {
+function updateBackgroundColor(normalizedAngle, isDay) {
     let color;
-    let intensity;
 
-    if (isDay) { // 白天
-        if (angle < Math.PI / 2) {
-            intensity = angle / (Math.PI / 2);
-            color = new THREE.Color(0.5 * intensity, 0.7 * intensity, 1 * intensity);
-        } else {
-            intensity = (Math.PI - angle) / (Math.PI / 2);
-            color = new THREE.Color(0.5 * intensity, 0.7 * intensity, 1 * intensity);
+    console.log(normalizedAngle)
+
+    if (isDay) {
+        // Daytime logic
+        if (normalizedAngle > 0.75) {
+            // Early Day (Soft Blue)
+            const intensity = Math.abs((normalizedAngle - 1) / 0.25); // Normalize from 0 to 1
+            color = new THREE.Color(
+                0.1 * intensity, // R: Increase red component for light blue
+                0.2 * intensity, // G: Increase green component for light blue
+                0.3 * intensity  // B: Increase blue component for light blue
+            );
+
+        } else if (normalizedAngle <= 0.75 && normalizedAngle > 0) {
+            // Midday (Light Blue to Bright Blue)
+            const middayIntensity = (0.75 - normalizedAngle) / 0.75; // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                0.1 + 0.4 * (middayIntensity), // R: Light blue to bright blue
+                0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
+                0.3 + 0.65 * (middayIntensity)  // B: Light blue to bright blue
+            );
+
+        } else if (normalizedAngle <= 0 && normalizedAngle > -.5) {
+            // Mid to late day (Bright Blue to light pink)
+            const middayIntensity = Math.abs((0.5 + normalizedAngle) / 0.5); // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                0.5 + 0 * (middayIntensity), // R: Light blue to bright blue
+                0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
+                0.35 + 0.6 * (middayIntensity)  // B: Light blue to bright blue
+            );
+            console.log(color)
+        } else if (normalizedAngle <= -.5 && normalizedAngle > -1) {
+            // late day (light pink to orange)
+            const middayIntensity = 1 - Math.abs((0.5 + normalizedAngle) / 0.5); // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                0.7 - .2 * (middayIntensity), // R: Light blue to bright blue
+                0.25 - .05 * (middayIntensity), // G: Light green to bright green
+                0.1 + 0.15 * (middayIntensity)  // B: Light blue to bright blue
+            );
+            console.log(color)
         }
-    } else { // 夜晚
-        if (angle < Math.PI / 2) {
-            intensity = 1 - angle / (Math.PI / 2);
-            color = new THREE.Color(0.05 * intensity, 0.05 * intensity, 0.2 * intensity);
-        } else {
-            intensity = (angle - Math.PI / 2) / (Math.PI / 2);
-            color = new THREE.Color(0.05 * intensity, 0.05 * intensity, 0.2 * intensity);
+         else {
+            
+        }
+    } else {
+        if (normalizedAngle <= -.75 && normalizedAngle > -1) {
+            // Late Day (orange to black)
+            const lateDayIntensity = 1 - Math.abs((1 + normalizedAngle) / 0.25); // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                .7 * (lateDayIntensity),   // R: Constant for warm yellow
+                0.25 * (lateDayIntensity), // G: Fade green
+                0.1 * (lateDayIntensity)  // B: Fade blue
+            );
+            console.log(color)
+        } else{
+            // Nighttime logic
+            color = new THREE.Color(
+                0,
+                0,
+                0,
+            );
         }
     }
 
     scene.background = color;
 }
+
 
 
 
@@ -427,35 +474,44 @@ function animate() {
     // TODO: Loop through all the orbiting planets and apply transformation to create animation effect
     planets.forEach(function (obj, index) {
         let planet = obj.mesh;
-
+    
         let distance = obj.distance;
         let speed = obj.speed;
-        let initialAngle = obj.initialAngle; // 获取初始角度
-
-        // Calculate the position of the star body, apply the initial angle and perform clockwise rotation
-        let angle = (initialAngle - speed * time) % (2 * Math.PI);
-        //if (angle < 0) angle += 2 * Math.PI; // 确保 angle 在 [0, 2 * Math.PI] 范围内
-        let orbitRotation = new THREE.Matrix4().makeRotationZ(angle); // 改为 Z 轴旋转
-        let translation = new THREE.Matrix4().makeTranslation(distance, 0, 3); // 沿 x 轴平移
+        let initialAngle = obj.initialAngle;
+    
+        // Calculate the position of the planet
+        let angle = (initialAngle + speed * time) % (2 * Math.PI);
+        let orbitRotation = new THREE.Matrix4().makeRotationZ(angle);
+        let translation = new THREE.Matrix4().makeTranslation(distance, 0, 0);
         let model_transform = new THREE.Matrix4().multiplyMatrices(orbitRotation, translation);
-
-
-
+    
         planet.matrix.copy(model_transform);
         planet.matrixAutoUpdate = false;
+    
+        // Get the transformed position of the sun
+        if (index === 0) { // Only check for the sun
+            let sunPosition = new THREE.Vector3();
+            planet.getWorldPosition(sunPosition);
+    
+            const sunX = sunPosition.x;
+            const sunY = sunPosition.y;
 
-        // 判断是白天还是夜晚
-        if (index === 0 && angle >= 0 && angle < Math.PI) {
-            updateBackgroundColor(angle, true); // 白天
-        } else if (index === 1 && angle >= Math.PI && angle < 2 * Math.PI) {
-            updateBackgroundColor(angle - Math.PI, false); // 夜晚
+            console.log(sunY + " X:" + sunX);
+
+    
+            if (sunY > 0) {
+                // Daytime
+                updateBackgroundColor((sunX / distance), true);
+            } else {
+                // Nighttime
+                updateBackgroundColor((sunX / distance), false);
+            }
         }
-
+    
         updatePlanetMaterialUniforms(planet);
-
+    
         // Update the camera position based on attachment
         updateCameraPosition(index, planet, model_transform);
-
     });
 
 

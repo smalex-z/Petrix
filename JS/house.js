@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { scene, earthRadius } from './globalVar.js'; 
+import { scene, earthRadius, housePosition } from './globalVar.js'; 
 
 import { sheep } from './pet.js';
 
-//Making a house on the planet 
-function createHouse() {
+//Making a basic house on the planet 
+//NOT USED ATM
+function createHouse() { 
     const houseGroup = new THREE.Group();
 
     // Create the base (walls)
@@ -35,15 +36,18 @@ function createHouse() {
 
 
 const house = createHouse();
-house.position.set(2, 0, 2); // Adjust position as needed
+house.position.copy(housePosition); // Adjust position as needed
 //scene.add(house);
 
-// FULL CREDIT TO THE CREATOR FOR THE HOUSE MODEL HERE: https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1
+
+// FULL CREDIT TO THE CREATOR FOR THE HOUSE MODEL HERE:
+// https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1
 const loader = new GLTFLoader();
 let importHouse;
 loader.load('../images/stardew_valley_cabin/scene.gltf', function (gltf) {
     importHouse = gltf.scene; // Get the house object
-    importHouse.position.set(2, 0, 2); // Adjust position as needed
+    importHouse.scale.set(2, 2, 2); // Double the size along all axes
+    importHouse.position.copy(housePosition); // Adjust position as needed
     scene.add(importHouse);
     adjustHouseHeight(importHouse, earthRadius);
 });

@@ -18,6 +18,7 @@ const planetSpeed = 0.2; // Set the default speed to .02, testing set to .2
 // Scene 
 var defaultCamPos = new THREE.Vector3(0, earthRadius + 3, 10);
 var defaultLook = new THREE.Vector3(0, earthRadius, 0);
+const housePosition = new THREE.Vector3(4, 0, 0); //Don't Touch Y value
 
 // Status
 // 定义状态的最大值和最小值
@@ -44,5 +45,5 @@ controls.enabled = true;
 controls.minDistance = 10;
 controls.maxDistance = 50;
 
-export { scene, camera, renderer, controls, defaultCamPos, defaultLook, blinkTime, 
+export { scene, camera, renderer, controls, defaultCamPos, defaultLook, housePosition, blinkTime, 
     iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS}

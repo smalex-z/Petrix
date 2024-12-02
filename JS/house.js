@@ -45,12 +45,24 @@ house.position.copy(housePosition); // Adjust position as needed
 const loader = new GLTFLoader();
 let importHouse;
 loader.load('../images/stardew_valley_cabin/scene.gltf', function (gltf) {
+    //House 
     importHouse = gltf.scene; // Get the house object
     importHouse.scale.set(2, 2, 2); // Double the size along all axes
     importHouse.position.copy(housePosition); // Adjust position as needed
     scene.add(importHouse);
+
+    //Support Block
+    const blockGeometry = new THREE.BoxGeometry(3, .5, 3); // Adjust size as needed
+    const blockMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // Green color
+    const supportBlock = new THREE.Mesh(blockGeometry, blockMaterial);
+    scene.add(supportBlock);
+
+
     adjustHouseHeight(importHouse, earthRadius);
+    adjustBlockHeight(supportBlock, earthRadius);
+
 });
+
 
 function adjustHouseHeight(house, earthRadius) {
     const x = house.position.x;
@@ -59,6 +71,12 @@ function adjustHouseHeight(house, earthRadius) {
     house.position.y = y;
 }
 
+function adjustBlockHeight(block, earthRadius) {
+    const x = housePosition.x - .375;
+    const z = housePosition.z - .45;
+    const y = Math.sqrt(Math.max(0, earthRadius ** 2 - x ** 2 - z ** 2)) - .25;
+    block.position.set(x, y, z); // Adjust position as needed
+}
 
 
 function checkPetHouseInteraction() {

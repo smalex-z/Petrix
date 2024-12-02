@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { scene, earthRadius, housePosition } from './globalVar.js'; 
+import { scene, earthRadius, housePosition } from './globalVar.js';
 
-import { sheep } from './pet.js';
+import { sheep } from './sheep';
 
 //Making a basic house on the planet 
 //NOT USED ATM
-function createHouse() { 
+function createHouse() {
     const houseGroup = new THREE.Group();
 
     // Create the base (walls)

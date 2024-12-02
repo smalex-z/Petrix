@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { sheep } from './pet.js'; // Assuming pet.js exports sheep
-
+import { sheep } from './sheep.js'; // Assuming pet.js exports sheep
+import { dog } from './dog.js';
 // 创建纹理加载器
 const textureLoader = new THREE.TextureLoader();
 
@@ -34,6 +34,10 @@ happinessSprite.scale.set(iconScale, iconScale, iconScale);
 sheep.add(hungerSprite);
 sheep.add(hygieneSprite);
 sheep.add(happinessSprite);
+
+dog.add(hungerSprite);
+dog.add(hygieneSprite);
+dog.add(happinessSprite);
 
 
 // 设置图标的位置（羊头的上方）

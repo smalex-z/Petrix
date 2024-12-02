@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+
 //Main
 var iconIndex = {
     currentIconIndex: 0, // Store the value as a property of an object
@@ -27,7 +28,6 @@ const MIN_STATUS = 0;
 
 // sceneSetup.js
 
-
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -46,4 +46,4 @@ controls.minDistance = 10;
 controls.maxDistance = 50;
 
 export { scene, camera, renderer, controls, defaultCamPos, defaultLook, housePosition, blinkTime, 
-    iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS}
+    iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS, chosenPet}

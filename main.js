@@ -14,11 +14,11 @@ import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from 
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 
+import { createPetSelectionPopup, pauseBeforeSelection  } from './JS/petSelection.js';
 
 
 
 
-let chosenPet = chicken;
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
 const actionInterval = 2; // 动作间隔时间（秒）
@@ -34,7 +34,7 @@ let clock = new THREE.Clock();
 // Create additional variables as needed here
 
 
-
+let chosenPet = sheep;
 
 
 
@@ -249,6 +249,10 @@ function petDies() {
     lifeDecreaseInterval = null;
 }
 
+
+
+
+
 // 每秒钟调用一次 updatePetStatus
 setInterval(updatePetStatus, 1000);
 
@@ -262,6 +266,9 @@ window.addEventListener('resize', onWindowResize, false);
 
 // Handle keyboard input
 document.addEventListener('keydown', (event) => handleCameraAttachment(event, planets), false);
+
+// pauseBeforeSelection ();
+createPetSelectionPopup();
 
 animate();
 

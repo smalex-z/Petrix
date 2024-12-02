@@ -29,7 +29,7 @@ scene.add(sun);
 
 // 修改 moon 的位置和速度，代表月亮
 // Modify the position and speed of the Moon, represent the moon
-const moonGeom = new THREE.SphereGeometry(0.5, 16, 16);
+const moonGeom = new THREE.SphereGeometry(2, 16, 16);
 const moonMaterial = createPhongMaterial({
     color: new THREE.Color(0x0000D1),
     ambient: 1.0,
@@ -44,7 +44,7 @@ scene.add(moon);
 // Store their initial angles in the Planets array, so that they are 180 ° apart
 planets = [
     { mesh: sun, distance: orbitDistance, speed: planetSpeed, initialAngle: 0 },    // 太阳，从 180° 开始
-    { mesh: moon, distance: orbitDistance, speed: planetSpeed, initialAngle: Math.PI }           // 月亮，从 0° 开始
+    { mesh: moon, distance: orbitDistance, speed: -planetSpeed, initialAngle: 0 }           // 月亮，从 0° 开始
 ];
 
 export { planets, orbitDistance };

@@ -473,7 +473,7 @@ function animate() {
     });
 
 
-    // TODO: Loop through all the orbiting planets and apply transformation to create animation effect
+    // Rotation Logic
     planets.forEach(function (obj, index) {
         let planet = obj.mesh;
 
@@ -483,10 +483,30 @@ function animate() {
 
         // Calculate the position of the planet
         let angle = (initialAngle + speed * time) % (2 * Math.PI);
+        
         let orbitRotation = new THREE.Matrix4().makeRotationZ(angle);
         let translation = new THREE.Matrix4().makeTranslation(distance, 0, 0);
-        let model_transform = new THREE.Matrix4().multiplyMatrices(orbitRotation, translation);
+        
+        const tiltAngle = Math.PI / 4; // 45 degrees
+        const rotAngle = Math.PI / 2;
 
+        let model_transform;
+        if (index === 0) { // Sun Rotation
+            // Sun-specific orbit: Tilted at 45 degrees
+            model_transform = new THREE.Matrix4()
+            .multiply(rotationMatrixY(-rotAngle))
+            .multiply(rotationMatrixX(tiltAngle))
+            .multiply(orbitRotation)
+            .multiply(translation);
+        } else {
+            // Moon-specific orbit: Tilted at -45 degrees
+            // Combine tilt with the normal orbit rotation and translation
+            model_transform = new THREE.Matrix4()
+            .multiply(rotationMatrixY(rotAngle))
+            .multiply(rotationMatrixX(tiltAngle))
+            .multiply(orbitRotation)
+            .multiply(translation);
+        }
         planet.matrix.copy(model_transform);
         planet.matrixAutoUpdate = false;
 

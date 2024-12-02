@@ -432,7 +432,7 @@ function animate() {
         let speed = obj.speed;
         let initialAngle = obj.initialAngle; // 获取初始角度
 
-        // 计算星体的位置，应用初始角度并进行顺时针旋转
+        // Calculate the position of the star body, apply the initial angle and perform clockwise rotation
         let angle = (initialAngle - speed * time) % (2 * Math.PI);
         //if (angle < 0) angle += 2 * Math.PI; // 确保 angle 在 [0, 2 * Math.PI] 范围内
         let orbitRotation = new THREE.Matrix4().makeRotationZ(angle); // 改为 Z 轴旋转
@@ -468,4 +468,4 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-export { scene }
+export { scene, lastBlinkTime, currentIconIndex}

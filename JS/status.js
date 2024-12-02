@@ -1,4 +1,5 @@
 import { hungerSprite, hygieneSprite, happinessSprite } from './icons.js';
+import { lastBlinkTime, currentIconIndex } from '../main.js';
 import { camera } from './sceneSetup.js';
 
 let iconsToShow = []; // 当前需要显示的图标列表
@@ -82,9 +83,9 @@ function updateIconsDisplay(icons) {
         iconsToShow[currentIconIndex].visible = true;
     }
 
-    // 重置闪烁计时器
+    // Reset the flashmeter
     lastBlinkTime = Date.now();
-    iconVisible = true; // 初始化为可见状态
+    iconVisible = true; 
 }
 
 export { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS };

@@ -6,8 +6,8 @@ import { scene } from './sceneSetup.js';
 let planets = [];
 
 // Create orbiting planets
-const orbitDistance = 10; // 调整为更靠近中心的距离
-const planetSpeed = 0.02; // 设置它们的相同速度
+const orbitDistance = 10; // Adjust the distance closer to the center
+const planetSpeed = 0.02; // Set the same speed
 
 
 // TODO: Create the green
@@ -29,7 +29,7 @@ const sunMaterial = createPhongMaterial({
 
 });
 const sun = new THREE.Mesh(sunGeom, sunMaterial);
-sun.position.set(orbitDistance, -3, 0); // Move yellow planet (sun) to the right
+sun.position.set(orbitDistance, 0, 0); // Move yellow planet (sun) to the right
 scene.add(sun);
 
 // 修改 moon 的位置和速度，代表月亮
@@ -43,7 +43,7 @@ const moonMaterial = createPhongMaterial({
     smoothness: 100.0
 });
 const moon = new THREE.Mesh(moonGeom, moonMaterial);
-moon.position.set(-orbitDistance, -3, 0); // Set initial position to match green planet's Y position
+moon.position.set(-orbitDistance, 0, 0); // Set initial position to match green planet's Y position
 scene.add(moon);
 
 // Store their initial angles in the Planets array, so that they are 180 ° apart

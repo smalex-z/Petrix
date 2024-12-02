@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls, earthRadius } from './JS/globalVar.js'; 
+import { scene, camera, renderer, controls, earthRadius, lastBlinkTime, currentIconIndex } from './JS/globalVar.js'; 
 
 import { sheep } from './JS/pet.js'
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';

@@ -37,7 +37,7 @@ function updatePetStatus() {
     petStatus.happiness = Math.max(petStatus.happiness - 0.05, MIN_STATUS);
 
     // 检查需要显示的图标
-    const newIconsToShow = [];
+    let newIconsToShow = [];
 
     if (petStatus.hunger > 10) {
         newIconsToShow.push(hungerSprite);

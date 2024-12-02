@@ -1,6 +1,5 @@
 import { hungerSprite, hygieneSprite, happinessSprite } from './icons.js';
-import { lastBlinkTime, currentIconIndex } from '../main.js';
-import { camera } from './sceneSetup.js';
+import {iconIndex, lastBlinkTime, MIN_STATUS, MAX_STATUS} from './globalVar.js'
 
 let iconsToShow = []; // 当前需要显示的图标列表
 
@@ -12,10 +11,6 @@ let petStatus = {
     happiness: 100,     // 快乐度，0-100
     petAlive: true,     // 定义宠物的生命状态
 };
-
-// 定义状态的最大值和最小值
-const MAX_STATUS = 100;
-const MIN_STATUS = 0;
 
 
 // 更新状态显示的函数
@@ -38,7 +33,7 @@ function updatePetStatus() {
     petStatus.happiness = Math.max(petStatus.happiness - 0.05, MIN_STATUS);
 
     // 检查需要显示的图标
-    const newIconsToShow = [];
+    let newIconsToShow = [];
 
     if (petStatus.hunger > 10) {
         newIconsToShow.push(hungerSprite);
@@ -71,7 +66,7 @@ function updateIconsDisplay(icons) {
     iconsToShow = icons;
 
     // 重置当前图标索引
-    currentIconIndex = 0;
+    iconIndex.currentIconIndex = 0;
 
     // 隐藏所有图标
     hungerSprite.visible = false;
@@ -80,7 +75,7 @@ function updateIconsDisplay(icons) {
 
     // 如果有图标需要显示，显示第一个
     if (iconsToShow.length > 0) {
-        iconsToShow[currentIconIndex].visible = true;
+        iconsToShow[iconIndex.currentIconIndex].visible = true;
     }
 
     // Reset the flashmeter
@@ -88,4 +83,4 @@ function updateIconsDisplay(icons) {
     iconVisible = true; 
 }
 
-export { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow, MIN_STATUS, MAX_STATUS };
+export { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow };

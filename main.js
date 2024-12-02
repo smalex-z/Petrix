@@ -3,6 +3,8 @@ import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, M
 
 import { sheep } from './JS/sheep';
 import { dog } from './JS/dog';
+import { chicken } from './JS/chicken';
+
 
 import { checkPetHouseInteraction } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
@@ -16,7 +18,7 @@ import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl
 
 
 
-let chosenPet = dog;
+let chosenPet = chicken;
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
 const actionInterval = 2; // 动作间隔时间（秒）

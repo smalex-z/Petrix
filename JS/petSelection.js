@@ -71,7 +71,3 @@ export function createPetSelectionPopup() {
     document.body.appendChild(popup);
 }
 
-// Pausing the game until pet is selected
-export function pauseBeforeSelection() {
-    renderer.setAnimationLoop(null);
-}

@@ -57,7 +57,7 @@ loader.load('../images/stardew_valley_cabin/scene.gltf', function (gltf) {
 
     //Support Block
     const blockGeometry = new THREE.BoxGeometry(3, .5, 3); // Adjust size as needed
-    const blockMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // Green color
+    const blockMaterial = new THREE.MeshStandardMaterial({ color: 0x6b8530 }); // Green color
     const supportBlock = new THREE.Mesh(blockGeometry, blockMaterial);
     scene.add(supportBlock);
 

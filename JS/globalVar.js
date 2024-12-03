@@ -12,13 +12,15 @@ var blinkTime = {
 
 
 // Planets
-const earthRadius = 24;
-const orbitDistance = 80; // Adjust the distance closer to the center
+const earthRadius = 48;
+const orbitDistance = 140; // Adjust the distance closer to the center
 const planetSpeed = 0.4; // Set the default speed to .02, testing set to .2
+const moonRadius = 4;
+const sunRadius = 8;
 
 // Scene 
-var defaultCamPos = new THREE.Vector3(0, earthRadius + 4, 10);
-var defaultLook = new THREE.Vector3(0, earthRadius + 1, 0);
+var defaultCamPos = new THREE.Vector3(0, earthRadius + 6, 16);
+var defaultLook = new THREE.Vector3(0, earthRadius + 2, 0);
 const housePosition = new THREE.Vector3(4, 0, 0); //Don't Touch Y value
 
 // Status
@@ -27,7 +29,6 @@ const MAX_STATUS = 100;
 const MIN_STATUS = 0;
 
 // sceneSetup.js
-
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -43,7 +44,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.copy(defaultLook);
 controls.enabled = true;
 controls.minDistance = 10;
-controls.maxDistance = 50;
+controls.maxDistance = 1000;
 
 export { scene, camera, renderer, controls, defaultCamPos, defaultLook, housePosition, blinkTime, 
-    iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS }
+    iconIndex, earthRadius, sunRadius, moonRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS}

@@ -5,7 +5,6 @@ import { sheep } from './JS/sheep';
 import { dog } from './JS/dog';
 import { chicken } from './JS/chickens.js';
 
-
 import { checkPetHouseInteraction } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
@@ -430,8 +429,19 @@ function updateBackgroundColor(normalizedAngle, isDay) {
     scene.background = color;
 }
 
+function startGame(selectedPet) {
+    var pet;
+    if (selectedPet === 'sheep') {
+        pet = sheep;
+    } else if (selectedPet === 'dog') {
+        pet = dog;
+    } else if (selectedPet === 'chicken') {
+        pet = chicken;
 
-
+    }
+    scene.add(pet);
+    renderer.setAnimationLoop(animate); // Resume rendering
+}
 
 function animate() {
 
@@ -559,4 +569,4 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-export { animate }
+export { startGame }

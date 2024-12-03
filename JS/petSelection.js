@@ -1,8 +1,5 @@
 import { scene, renderer } from './globalVar.js';
-import { animate } from '../main.js';
-import { sheep } from './sheep.js';
-import { dog } from './dog.js';
-import { chicken } from './chickens.js';
+import { startGame } from '../main.js';
 
 export function createPetSelectionPopup() {
     const popup = document.createElement('div');
@@ -73,21 +70,6 @@ export function createPetSelectionPopup() {
     popup.appendChild(startButton);
     document.body.appendChild(popup);
 }
-
-function startGame(selectedPet) {
-    var pet;
-    if (selectedPet === 'sheep') {
-        pet = sheep;
-    } else if (selectedPet === 'dog') {
-        pet = dog;
-    } else if (selectedPet === 'chicken') {
-        pet = chicken;
-
-    }
-    scene.add(pet);
-    renderer.setAnimationLoop(animate); // Resume rendering
-}
-
 
 // Pausing the game until pet is selected
 export function pauseBeforeSelection() {

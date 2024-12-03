@@ -53,7 +53,7 @@ sheep.add(tail);
 sheep.position.set(0, earthRadius + .3, 0); // 放置在地面上
 
 // 将羊添加到场景中
-// scene.add(sheep);
+scene.add(sheep);
 // 创建宠物网格
 const pet = sheep;
 

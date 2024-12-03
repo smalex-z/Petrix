@@ -53,7 +53,6 @@ hygieneSprite.position.set(0, iconOffsetY, 0);
 happinessSprite.position.set(0, iconOffsetY, 0);
 
 // 定义变量
-
 hungerSprite.renderOrder = 1;
 hygieneSprite.renderOrder = 1;
 happinessSprite.renderOrder = 1;

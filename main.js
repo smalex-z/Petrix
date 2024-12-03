@@ -433,7 +433,7 @@ function startGame(selectedPet) {
         chosenPet = chicken;
     }
     scene.add(chosenPet);
-    renderer.setAnimationLoop(animate); // Resume rendering
+    animate(); // Resume rendering
 }
 
 function animate() {
@@ -535,7 +535,7 @@ function animate() {
             planet.getWorldPosition(sunPosition);
 
             const sunY = sunPosition.y;
-            
+
             if (sunY > 0) {
                 // Daytime
                 updateBackgroundColor((angle / (2 * Math.PI)), true);

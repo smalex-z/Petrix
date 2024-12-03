@@ -32,8 +32,7 @@ const blinkInterval = 500; // 闪烁间隔，单位为毫秒
 let clock = new THREE.Clock();
 // Create additional variables as needed here
 
-
-let chosenPet = sheep;
+let chosenPet;
 
 
 
@@ -269,10 +268,6 @@ document.addEventListener('keydown', (event) => handleCameraAttachment(event, pl
 // pauseBeforeSelection ();
 createPetSelectionPopup();
 
-animate();
-
-
-
 // This function is used to update the uniform of the planet's materials in the animation step. No need to make any change
 function updatePlanetMaterialUniforms(planet) {
     const material = planet.material;
@@ -430,16 +425,14 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 }
 
 function startGame(selectedPet) {
-    var pet;
     if (selectedPet === 'sheep') {
-        pet = sheep;
+        chosenPet = sheep;
     } else if (selectedPet === 'dog') {
-        pet = dog;
+        chosenPet = dog;
     } else if (selectedPet === 'chicken') {
-        pet = chicken;
-
+        chosenPet = chicken;
     }
-    scene.add(pet);
+    scene.add(chosenPet);
     renderer.setAnimationLoop(animate); // Resume rendering
 }
 

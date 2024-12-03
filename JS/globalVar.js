@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+
 //Main
 var iconIndex = {
     currentIconIndex: 0, // Store the value as a property of an object

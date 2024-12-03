@@ -50,10 +50,9 @@ tail.position.set(-1.1, -0.8, 0);
 sheep.add(tail);
 
 // 设置羊的整体位置
-sheep.position.set(0, earthRadius + .3, 0); // 放置在地面上
+sheep.position.set(2, earthRadius + 0.3, 2); // 放置在地面上
 
 // 将羊添加到场景中
-// scene.add(sheep);
 // 创建宠物网格
 const pet = sheep;
 

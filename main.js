@@ -5,7 +5,6 @@ import { sheep } from './JS/sheep';
 import { dog } from './JS/dog';
 import { chicken } from './JS/chickens.js';
 
-
 import { checkPetHouseInteraction } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
@@ -14,11 +13,11 @@ import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from 
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 
+import { createPetSelectionPopup, pauseBeforeSelection  } from './JS/petSelection.js';
 
 
 
 
-let chosenPet = chicken;
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
 const actionInterval = 2; // 动作间隔时间（秒）
@@ -33,8 +32,7 @@ const blinkInterval = 500; // 闪烁间隔，单位为毫秒
 let clock = new THREE.Clock();
 // Create additional variables as needed here
 
-
-
+let chosenPet;
 
 
 
@@ -249,6 +247,10 @@ function petDies() {
     lifeDecreaseInterval = null;
 }
 
+
+
+
+
 // 每秒钟调用一次 updatePetStatus
 setInterval(updatePetStatus, 1000);
 
@@ -263,9 +265,8 @@ window.addEventListener('resize', onWindowResize, false);
 // Handle keyboard input
 document.addEventListener('keydown', (event) => handleCameraAttachment(event, planets), false);
 
-animate();
-
-
+// pauseBeforeSelection ();
+createPetSelectionPopup();
 
 // This function is used to update the uniform of the planet's materials in the animation step. No need to make any change
 function updatePlanetMaterialUniforms(planet) {
@@ -423,8 +424,22 @@ function updateBackgroundColor(normalizedAngle, isDay) {
     scene.background = color;
 }
 
+function startGame(selectedPet) {
+    if (selectedPet === 'sheep') {
+        chosenPet = sheep;
+    } else if (selectedPet === 'dog') {
+        chosenPet = dog;
+    } else if (selectedPet === 'chicken') {
+        chosenPet = chicken;
+    }
+    scene.add(chosenPet);
+    
+    chosenPet.add(hungerSprite);
+    chosenPet.add(hygieneSprite);
+    chosenPet.add(happinessSprite);
+    animate(); // Resume rendering
 
-
+}
 
 function animate() {
 
@@ -550,3 +565,5 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+export { startGame }

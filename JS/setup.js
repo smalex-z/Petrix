@@ -59,12 +59,15 @@ export function createPetSelectionPopup() {
 
     startButton.addEventListener('click', () => {
         const selectedPet = document.querySelector('input[name="pet"]:checked');
+        const gamePopup = document.getElementById('game-popup');
+
         if (!selectedPet) {
             alert('Please select a pet!');
             return;
         }
         startGame(selectedPet.value);
         document.body.removeChild(popup);
+        gamePopup.style.display = 'block';
     });
 
     popup.appendChild(startButton);

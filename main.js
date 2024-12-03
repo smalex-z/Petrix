@@ -13,7 +13,7 @@ import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from 
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 
-import { createPetSelectionPopup, pauseBeforeSelection  } from './JS/petSelection.js';
+import { createPetSelectionPopup, pauseBeforeSelection  } from './JS/setup.js';
 
 
 

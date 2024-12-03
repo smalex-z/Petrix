@@ -72,7 +72,7 @@ dog.add(collar);
 dog.position.set(2, earthRadius + 0.3, 2); // 放置在地面上
 
 // 将狗添加到场景中
-scene.add(dog);
+// scene.add(dog);
 
 // 缩小狗的大小
 dog.scale.set(0.2, 0.2, 0.2);

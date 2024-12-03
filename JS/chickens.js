@@ -65,10 +65,10 @@ chicken.add(leftWing);
 chicken.add(rightWing);
 
 // 设置鸡的整体位置
-chicken.position.set(-2, earthRadius, 4); // 放置在地面上
+chicken.position.set(2, earthRadius + 0.3, 2); // 放置在地面上
 
 // 将鸡添加到场景中
-scene.add(chicken);
+// scene.add(chicken);
 
 // 缩小鸡的大小
 chicken.scale.set(0.2, 0.2, 0.2);

@@ -433,7 +433,12 @@ function startGame(selectedPet) {
         chosenPet = chicken;
     }
     scene.add(chosenPet);
+    
+    chosenPet.add(hungerSprite);
+    chosenPet.add(hygieneSprite);
+    chosenPet.add(happinessSprite);
     animate(); // Resume rendering
+
 }
 
 function animate() {

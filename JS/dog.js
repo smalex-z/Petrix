@@ -77,4 +77,12 @@ dog.position.set(2, earthRadius + 0.3, 2); // 放置在地面上
 // 缩小狗的大小
 dog.scale.set(0.2, 0.2, 0.2);
 
+// 确保狗的所有子对象启用投射阴影
+dog.traverse((node) => {
+    if (node.isMesh) {
+        node.castShadow = true; // 允许投射阴影
+        node.receiveShadow = true; // 允许接收阴影
+    }
+});
+
 export { dog };

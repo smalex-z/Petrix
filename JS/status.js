@@ -21,7 +21,6 @@ function updatePetStatusDisplay() {
     document.getElementById('happiness-status').textContent = petStatus.happiness.toFixed(0);
 }
 
-
 function updatePetStatus() {
     if (!petStatus.petAlive) return;
 

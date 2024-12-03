@@ -535,8 +535,7 @@ function animate() {
             planet.getWorldPosition(sunPosition);
 
             const sunY = sunPosition.y;
-            console.log((angle / (2 * Math.PI)));
-
+            
             if (sunY > 0) {
                 // Daytime
                 updateBackgroundColor((angle / (2 * Math.PI)), true);

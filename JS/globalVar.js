@@ -46,4 +46,4 @@ controls.minDistance = 10;
 controls.maxDistance = 50;
 
 export { scene, camera, renderer, controls, defaultCamPos, defaultLook, housePosition, blinkTime, 
-    iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS, chosenPet}
+    iconIndex, earthRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS }

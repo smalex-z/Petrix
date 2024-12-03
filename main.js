@@ -558,3 +558,5 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+export { animate }

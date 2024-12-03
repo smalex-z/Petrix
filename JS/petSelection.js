@@ -1,4 +1,5 @@
 import { scene, renderer } from './globalVar.js';
+import { animate } from '../main.js';
 import { sheep } from './sheep.js';
 import { dog } from './dog.js';
 import { chicken } from './chickens.js';
@@ -74,14 +75,16 @@ export function createPetSelectionPopup() {
 }
 
 function startGame(selectedPet) {
+    var pet;
     if (selectedPet === 'sheep') {
-        scene.add(sheep);
+        pet = sheep;
     } else if (selectedPet === 'dog') {
-        scene.add(dog);
+        pet = dog;
     } else if (selectedPet === 'chicken') {
-        scene.add(chicken);
+        pet = chicken;
 
     }
+    scene.add(pet);
     renderer.setAnimationLoop(animate); // Resume rendering
 }
 

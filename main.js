@@ -1,7 +1,11 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js'; 
+import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js';
 
-import { sheep } from './JS/pet.js';
+import { sheep } from './JS/sheep';
+import { dog } from './JS/dog';
+import { chicken } from './JS/chickens.js';
+
+
 import { checkPetHouseInteraction } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
@@ -14,6 +18,7 @@ import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl
 
 
 
+let chosenPet = chicken;
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
 const actionInterval = 2; // 动作间隔时间（秒）
@@ -46,29 +51,29 @@ function performRandomAction() {
             break;
         case 1:
             // 左转
-            sheep.rotation.y += Math.PI / 2;
+            chosenPet.rotation.y += Math.PI / 2;
             break;
         case 2:
             // 右转
-            sheep.rotation.y -= Math.PI / 2;
+            chosenPet.rotation.y -= Math.PI / 2;
             break;
         case 3:
             // 前进两步
-            moveSheep(moveDistance * 2);
+            movePet(moveDistance * 2);
             break;
         case 4:
             // 后退两步
-            sheep.rotation.y += Math.PI; // 转身
-            moveSheep(moveDistance * 2);
+            chosenPet.rotation.y += Math.PI; // 转身
+            movePet(moveDistance * 2);
             break;
     }
 }
 
-function moveSheep(distance) {
+function movePet(distance) {
     const direction = new THREE.Vector3(0, 0, 1);
-    direction.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), sheep.rotation.y));
+    direction.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), chosenPet.rotation.y));
 
-    const newPosition = sheep.position.clone().add(direction.multiplyScalar(distance));
+    const newPosition = chosenPet.position.clone().add(direction.multiplyScalar(distance));
 
     const distanceFromCenter = Math.sqrt(newPosition.x ** 2 + newPosition.z ** 2);
 
@@ -77,13 +82,13 @@ function moveSheep(distance) {
         isMoving = true;
     } else {
         // Beyond the range, turn around and try to move again
-        sheep.rotation.y += Math.PI;
+        chosenPet.rotation.y += Math.PI;
 
         // Calculate the new direction and location
         const adjustedDirection = new THREE.Vector3(0, 0, 1);
-        adjustedDirection.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), sheep.rotation.y));
+        adjustedDirection.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), chosenPet.rotation.y));
 
-        const adjustedNewPosition = sheep.position.clone().add(adjustedDirection.multiplyScalar(distance));
+        const adjustedNewPosition = chosenPet.position.clone().add(adjustedDirection.multiplyScalar(distance));
 
         const adjustedDistanceFromCenter = adjustedNewPosition.length();
 
@@ -92,19 +97,19 @@ function moveSheep(distance) {
             isMoving = true;
         } else {
             // If it is still exceeded and does not move, you can try other actions in the next random action.
-            isMoving = false;
+            chosenPet.rotation.y += Math.PI;
         }
     }
 }
 
 
-function adjustSheepHeight() {
-    const x = sheep.position.x;
-    const z = sheep.position.z;
+function adjustPetHeight() {
+    const x = chosenPet.position.x;
+    const z = chosenPet.position.z;
 
     const y = Math.sqrt(Math.max(0, earthRadius * earthRadius - x * x - z * z));
 
-    sheep.position.y = y + 0.2; //0.2 是羊离地面的高度
+    chosenPet.position.y = y + 0.2; //0.2 是羊离地面的高度
 }
 
 
@@ -237,7 +242,7 @@ function getHungerRange(hunger) {
 
 function petDies() {
     alert('Your Pet has Died'); //TODO: death screen
-    scene.remove(sheep);
+    scene.remove(chosenPet);
 
     // 清除定时器
     clearInterval(lifeDecreaseInterval);
@@ -369,7 +374,7 @@ function updateBackgroundColor(normalizedAngle, isDay) {
 
         } else if (normalizedAngle >= 0.125 && normalizedAngle < .25) {
             // Midday (Light Blue to Bright Blue)
-            const middayIntensity = 1- (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
+            const middayIntensity = 1 - (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
             color = new THREE.Color(
                 0.1 + 0.4 * (middayIntensity), // R: Light blue to bright blue
                 0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
@@ -436,17 +441,21 @@ function animate() {
 
     // Update the location of sheep
     if (isMoving) {
-        let delta = targetPosition.clone().sub(sheep.position);
-        let distanceToTarget = delta.length();
+        const delta = targetPosition.clone().sub(chosenPet.position);
+        const distanceToTarget = delta.length();
+    
         if (distanceToTarget > moveSpeed) {
+            // Normalize direction and move
             delta.normalize().multiplyScalar(moveSpeed);
-            sheep.position.add(delta);
-            adjustSheepHeight();
+            chosenPet.position.add(delta);
         } else {
-            sheep.position.copy(targetPosition);
-            adjustSheepHeight();
-            isMoving = false;
+            // Snap to the target position
+            chosenPet.position.copy(targetPosition);
+            isMoving = false; // Stop moving
         }
+    
+        // Adjust height based on the environment
+        adjustPetHeight();
     }
     // Modify the flashing logic
     if (iconsToShow.length > 0) {
@@ -483,10 +492,10 @@ function animate() {
 
         // Calculate the position of the planet
         let angle = (initialAngle + speed * time) % (2 * Math.PI);
-        
+
         let orbitRotation = new THREE.Matrix4().makeRotationZ(angle);
         let translation = new THREE.Matrix4().makeTranslation(distance, 0, 0);
-        
+
         const tiltAngle = Math.PI / 4; // 45 degrees
         const rotAngle = Math.PI / 2;
 
@@ -494,18 +503,18 @@ function animate() {
         if (index === 0) { // Sun Rotation
             // Sun-specific orbit: Tilted at 45 degrees
             model_transform = new THREE.Matrix4()
-            .multiply(rotationMatrixY(-rotAngle))
-            .multiply(rotationMatrixX(tiltAngle))
-            .multiply(orbitRotation)
-            .multiply(translation);
+                .multiply(rotationMatrixY(-rotAngle))
+                .multiply(rotationMatrixX(tiltAngle))
+                .multiply(orbitRotation)
+                .multiply(translation);
         } else {
             // Moon-specific orbit: Tilted at -45 degrees
             // Combine tilt with the normal orbit rotation and translation
             model_transform = new THREE.Matrix4()
-            .multiply(rotationMatrixY(rotAngle))
-            .multiply(rotationMatrixX(tiltAngle))
-            .multiply(orbitRotation)
-            .multiply(translation);
+                .multiply(rotationMatrixY(rotAngle))
+                .multiply(rotationMatrixX(tiltAngle))
+                .multiply(orbitRotation)
+                .multiply(translation);
         }
         planet.matrix.copy(model_transform);
         planet.matrixAutoUpdate = false;
@@ -516,14 +525,14 @@ function animate() {
             planet.getWorldPosition(sunPosition);
 
             const sunY = sunPosition.y;
-            console.log((angle / (2* Math.PI)));
+            console.log((angle / (2 * Math.PI)));
 
             if (sunY > 0) {
                 // Daytime
-                updateBackgroundColor((angle / (2* Math.PI)), true);
+                updateBackgroundColor((angle / (2 * Math.PI)), true);
             } else {
                 // Nighttime
-                updateBackgroundColor((angle / (2* Math.PI)), false);
+                updateBackgroundColor((angle / (2 * Math.PI)), false);
             }
         }
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, earthRadius, orbitDistance, planetSpeed } from './globalVar.js'
+import { scene, earthRadius, moonRadius, sunRadius, orbitDistance, planetSpeed } from './globalVar.js'
 import { createPhongMaterial } from './shaders.js';
 
 
@@ -14,7 +14,7 @@ scene.add(green);
 
 
 // 修改 sun 的位置和速度，代表太阳
-const sunGeom = new THREE.SphereGeometry(4, 64, 64);
+const sunGeom = new THREE.SphereGeometry(sunRadius, 64, 64);
 // const sunMaterial = createPhongMaterial({
 //     color: new THREE.Color(0xffff00),
 //     ambient: 1.0,
@@ -39,7 +39,7 @@ scene.add(sun);
 
 // 修改 moon 的位置和速度，代表月亮
 // Modify the position and speed of the Moon, represent the moon
-const moonGeom = new THREE.SphereGeometry(2, 16, 16);
+const moonGeom = new THREE.SphereGeometry(moonRadius, 16, 16);
 // const moonMaterial = createPhongMaterial({
 //     color: new THREE.Color(0x0000D1),
 //     ambient: 1.0,

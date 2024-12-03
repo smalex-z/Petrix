@@ -4,13 +4,19 @@ import { createPhongMaterial } from './shaders.js';
 
 
 let planets = [];
+const textureLoader = new THREE.TextureLoader();
 
 // Create the Earth
-let green_geom = new THREE.SphereGeometry(earthRadius, 32, 32);
-let green_material = new THREE.MeshBasicMaterial({ color: 0x32cd32 });
-let green = new THREE.Mesh(green_geom, green_material);
-green.position.set(0, 0, 0);
-scene.add(green);
+let earth_geom = new THREE.SphereGeometry(earthRadius, 32, 32);
+const earthTexture = textureLoader.load('../images/earth.jpg');
+
+const earthMaterial = new THREE.MeshStandardMaterial({ 
+    map: earthTexture, 
+});
+let earth = new THREE.Mesh(earth_geom, earthMaterial);
+earth.rotation.z = Math.PI / 2; // Rotate 90 degrees around X-axis
+earth.position.set(0, 0, 0);
+scene.add(earth);
 
 
 // 修改 sun 的位置和速度，代表太阳
@@ -24,7 +30,6 @@ const sunGeom = new THREE.SphereGeometry(sunRadius, 64, 64);
 // });
 
 // TODO: Make the Sun Brighter
-const textureLoader = new THREE.TextureLoader();
 const sunTexture = textureLoader.load('../images/sun.jpg');
 const sunMaterial = new THREE.MeshStandardMaterial({ 
     map: sunTexture, 

@@ -18,7 +18,7 @@ const moonRadius = 4;
 const sunRadius = 8;
 
 // Scene 
-var defaultCamPos = new THREE.Vector3(0, earthRadius + 5, 10);
+var defaultCamPos = new THREE.Vector3(0, earthRadius + 6, 16);
 var defaultLook = new THREE.Vector3(0, earthRadius + 2, 0);
 const housePosition = new THREE.Vector3(4, 0, 0); //Don't Touch Y value
 
@@ -28,8 +28,6 @@ const MAX_STATUS = 100;
 const MIN_STATUS = 0;
 
 // sceneSetup.js
-
-
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);

@@ -6,8 +6,8 @@ let planets = [];
 const textureLoader = new THREE.TextureLoader();
 
 // Create the Earth
-let earth_geom = new THREE.SphereGeometry(earthRadius, 32, 32);
-const earthTexture = textureLoader.load('../images/earth.jpg');
+let earth_geom = new THREE.SphereGeometry(earthRadius, 128, 128);
+const earthTexture = textureLoader.load('../assets/images/earth.jpg');
 
 const earthMaterial = new THREE.MeshStandardMaterial({
     map: earthTexture,
@@ -30,9 +30,9 @@ const sunGeom = new THREE.SphereGeometry(sunRadius, 64, 64);
 // });
 
 // TODO: Make the Sun Brighter
-const sunTexture = textureLoader.load('../images/sun.jpg');
-const sunMaterial = new THREE.MeshStandardMaterial({
-    map: sunTexture,
+const sunTexture = textureLoader.load('../assets/images/sun.jpg');
+const sunMaterial = new THREE.MeshStandardMaterial({ 
+    map: sunTexture, 
     color: new THREE.Color(0xffe600), // Boost saturation
     emissive: new THREE.Color(0xffd700),
     emissiveIntensity: .2,
@@ -69,7 +69,7 @@ const moonGeom = new THREE.SphereGeometry(moonRadius, 16, 16);
 //     smoothness: 100.0
 // });
 
-const moonTexture = textureLoader.load('../images/moon.jpg');
+const moonTexture = textureLoader.load('../assets/images/moon.jpg');
 const moonMaterial = new THREE.MeshStandardMaterial({ map: moonTexture });
 
 const moon = new THREE.Mesh(moonGeom, moonMaterial);

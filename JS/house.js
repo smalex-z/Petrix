@@ -52,7 +52,7 @@ export { house };
 // https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1
 const loader = new GLTFLoader();
 let importHouse;
-loader.load('../images/stardew_valley_cabin/scene.gltf', function (gltf) {
+loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     //House 
     importHouse = gltf.scene; // Get the house object
     importHouse.scale.set(2, 2, 2); // Double the size along all axes

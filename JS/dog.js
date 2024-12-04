@@ -69,7 +69,7 @@ collar.rotation.x = Math.PI / 2;
 dog.add(collar);
 
 // 设置狗的整体位置
-dog.position.set(2, earthRadius + 0.3, 2); // 放置在地面上
+dog.position.set(2, earthRadius , 2); // 放置在地面上
 
 // 将狗添加到场景中
 // scene.add(dog);

@@ -1,0 +1,123 @@
+/* General Popup Styling */
+.popup {
+    position: fixed;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45vw;
+    background-color: #ffdc81;
+    border: 6px solid #df5718;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-family: "VT323", monospace;
+}
+
+/* Hidden class to hide elements */
+.hidden {
+    display: none;
+}
+
+/* Title Styling */
+.popup h2 {
+    margin: 0;
+    font-size: 2em;
+    color: #891d20;
+}
+
+/* Style for the pet option labels */
+
+.pet-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.pet-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+/* Hide the radio button */
+.pet-option input[type="radio"] {
+    display: none;
+}
+
+/* Style for the card container */
+.pet-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, border-color 0.2s, border-width 0.2s;
+}
+
+/* Hover effect */
+.pet-card:hover {
+    transform: scale(1.1);
+    border-color: #4CAF50;
+}
+
+/* Selected state styling */
+.pet-option input[type="radio"]:checked + .pet-card {
+    border-color: #4CAF50;
+    border-width: 4px;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Pet image */
+.pet-image {
+    width: 10vw;
+    height: 10vw;
+    margin-bottom: 5px;
+}
+
+/* Pet name text */
+.pet-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.start-button {
+  background: #c1a0e1;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 #381c1c; /* Dark brown bottom shadow */
+  box-sizing: border-box;
+  color: #381c1c;
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 36px;
+  opacity: 1;
+  outline: 0 solid transparent;
+  padding: 8px 36px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  border: 0;
+  transition: all 0.1s ease-in-out;
+}
+
+.start-button:active {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 #4a2b2b; /* Remove shadow on press */
+}

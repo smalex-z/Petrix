@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-image: url('../images/petrix.png');
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-position: top; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+canvas {
+    display: block;
+}

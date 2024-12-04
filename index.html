@@ -3,68 +3,29 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Virtual_Pet</title>
+	<title>Petrix</title>
+	<link rel="icon" href="./assets/images/icon.png" type="image/png">
+	<link rel="stylesheet" href="./assets/css/landingPage.css">
+	<link rel="stylesheet" href="./assets/css/general.css">
+	<link rel="stylesheet" href="./assets/css/game.css">
+
 	<style>
-		body {
-			margin: 0;
-			overflow: hidden;
-			background-image: url('./assets/images/petrix.png');
-		}
-
-		canvas {
-			display: block;
-		}
-
-		#status-bar {
-			position: absolute;
-			top: 10px;
-			left: 10px;
-			color: white;
-			font-size: 16px;
-			background-color: rgba(0, 0, 0, 0.5);
-			padding: 10px;
-			border-radius: 5px;
-		}
-
-		#interaction-bar {
-			position: absolute;
-			bottom: 10px;
-			left: 10px;
-		}
-
-		#interaction-title {
-			background-color: #333;
-			color: white;
-			padding: 10px;
-			cursor: pointer;
-			border: none;
-			font-size: 16px;
-			border-radius: 5px;
-		}
-
-		#interaction-buttons {
-			margin-top: 5px;
-			display: none;
-		}
-
-		#interaction-buttons button {
-			display: block;
-			margin-bottom: 5px;
-			width: 100px;
-			padding: 10px;
-			font-size: 16px;
-			cursor: pointer;
-			border: none;
-			border-radius: 5px;
-		}
+		@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 	</style>
-	<link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
 
 	<script type="module" src="/main.js"></script>
 
+	<div id="pet-selection-popup" class="popup hidden">
+		<h2>Choose Your Pet</h2>
+		<div id="pet-options" class="pet-container">
+			<!-- Options will be dynamically added by JavaScript -->
+		</div>
+		<button id="start-button" class="start-button">PLAY</button>
+	</div>
+	
 	<div id="game-popup" style="display: none;">
 		<!-- status bar-->
 		<div id="status-bar">
@@ -73,7 +34,6 @@
 			<div>Hygiene：<span id="hygiene-status">100</span></div>
 			<div>Happiness：<span id="happiness-status">100</span></div>
 		</div>
-
 
 		<!-- interaction-bar -->
 		<div id="interaction-bar">

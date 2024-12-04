@@ -6,6 +6,7 @@ import { dog } from './JS/dog';
 import { chicken } from './JS/chickens.js';
 
 import { checkPetHouseInteraction } from './JS/house.js';
+import './JS/ai-chicken.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';

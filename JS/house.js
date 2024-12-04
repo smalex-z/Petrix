@@ -53,6 +53,8 @@ export { house };
 const loader = new GLTFLoader();
 let importHouse;
 loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
+    console.log('Loaded GLTF:', gltf);
+
     //House 
     importHouse = gltf.scene; // Get the house object
     importHouse.scale.set(2, 2, 2); // Double the size along all axes
@@ -77,6 +79,8 @@ loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     adjustHouseHeight(importHouse, earthRadius);
     adjustBlockHeight(supportBlock, earthRadius);
 
+}, undefined, function (error) {
+    console.error('Error loading GLTF:', error);
 });
 
 function adjustHouseHeight(house, earthRadius) {

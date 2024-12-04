@@ -1,12 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { scene, earthRadius, housePosition } from './globalVar.js';
-
+import { updatePetStatusDisplay } from './status.js';
 import { sheep } from './sheep';
 import { dog } from './dog';
 import { chicken } from './chickens.js';
-
-
 
 //Making a basic house on the planet 
 //NOT USED ATM
@@ -18,6 +16,8 @@ function createHouse() {
     const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
     const walls = new THREE.Mesh(wallGeometry, wallMaterial);
     walls.position.y = 0.5; // Raise walls to sit on the ground
+    //walls.castShadow = true; // 投射阴影
+    //walls.receiveShadow = true; // 接收阴影
     houseGroup.add(walls);
 
     // Create the roof
@@ -26,6 +26,8 @@ function createHouse() {
     const roof = new THREE.Mesh(roofGeometry, roofMaterial);
     roof.position.y = 1.5; // Place roof on top of walls
     roof.rotation.y = Math.PI / 4; // Align the cone to form a pyramid
+    //roof.castShadow = true;
+    //roof.receiveShadow = true;
     houseGroup.add(roof);
 
     // Create the door
@@ -33,16 +35,18 @@ function createHouse() {
     const doorMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
     const door = new THREE.Mesh(doorGeometry, doorMaterial);
     door.position.set(0, 0.25, 0.51); // Slightly in front of the wall
+    //door.castShadow = true;
+    //door.receiveShadow = true;
     houseGroup.add(door);
 
     return houseGroup;
 }
 
-
 const house = createHouse();
-house.position.copy(housePosition); // Adjust position as needed
-//scene.add(house);
+house.position.set(0, 0.5, 0); // 调整屋子的高度和位置
+// 确保房子的所有子对象启用阴影
 
+export { house };
 
 // FULL CREDIT TO THE CREATOR FOR THE HOUSE MODEL HERE:
 // https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1
@@ -53,7 +57,16 @@ loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     importHouse = gltf.scene; // Get the house object
     importHouse.scale.set(2, 2, 2); // Double the size along all axes
     importHouse.position.copy(housePosition); // Adjust position as needed
+
     scene.add(importHouse);
+
+    // 确保房子所有子对象启用了阴影
+    importHouse.traverse((node) => {
+        if (node.isMesh) {
+            node.castShadow = true;  // 投射阴影
+            node.receiveShadow = true; // 接收阴影
+        }
+    });
 
     //Support Block
     const blockGeometry = new THREE.BoxGeometry(3, .5, 3); // Adjust size as needed
@@ -61,12 +74,10 @@ loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     const supportBlock = new THREE.Mesh(blockGeometry, blockMaterial);
     scene.add(supportBlock);
 
-
     adjustHouseHeight(importHouse, earthRadius);
     adjustBlockHeight(supportBlock, earthRadius);
 
 });
-
 
 function adjustHouseHeight(house, earthRadius) {
     const x = house.position.x;
@@ -82,12 +93,10 @@ function adjustBlockHeight(block, earthRadius) {
     block.position.set(x, y, z); // Adjust position as needed
 }
 
-
 function checkPetHouseInteraction() {
     const distanceToHouseSheep = sheep.position.distanceTo(house.position);
     const distanceToHouseDog = dog.position.distanceTo(house.position);
     const distanceToHouseChicken = chicken.position.distanceTo(house.position);
-
 
     if (distanceToHouseChicken < 2) { // Interaction range
         console.log('Pet is near the house.');

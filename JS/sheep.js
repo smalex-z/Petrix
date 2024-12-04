@@ -58,4 +58,12 @@ const pet = sheep;
 
 sheep.scale.set(0.2, 0.2, 0.2); // 缩小羊的大小
 
+// 确保羊的所有子对象启用投射阴影
+sheep.traverse((node) => {
+    if (node.isMesh) {
+        node.castShadow = true; // 允许投射阴影
+        node.receiveShadow = true; // 允许接收阴影
+    }
+});
+
 export { sheep };

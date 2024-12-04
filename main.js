@@ -15,6 +15,8 @@ import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl
 
 import { createPetSelectionPopup, pauseBeforeSelection  } from './JS/setup.js';
 
+import { sunLight, moonLight, sunTarget, moonTarget } from './JS/lighting.js';
+import { house } from './JS/house.js'; // house 也需要定义
 
 
 
@@ -33,7 +35,6 @@ let clock = new THREE.Clock();
 // Create additional variables as needed here
 
 let chosenPet;
-
 
 
 function performRandomAction() {
@@ -99,7 +100,6 @@ function movePet(distance) {
         }
     }
 }
-
 
 function adjustPetHeight() {
     const x = chosenPet.position.x;
@@ -433,17 +433,42 @@ function startGame(selectedPet) {
         chosenPet = chicken;
     }
     scene.add(chosenPet);
-    
+
+    chosenPet.castShadow = true; // 启用宠物投射阴影
+    chosenPet.receiveShadow = true; // 启用宠物接收阴影
+
     chosenPet.add(hungerSprite);
     chosenPet.add(hygieneSprite);
     chosenPet.add(happinessSprite);
     animate(); // Resume rendering
 
 }
+renderer.shadowMap.enabled = true; // 启用阴影映射
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 使用柔和阴影
 
 function animate() {
 
     requestAnimationFrame(animate);
+
+    // 获取太阳和月亮的当前位置
+    const sunPosition = new THREE.Vector3();
+    planets[0].mesh.getWorldPosition(sunPosition);
+
+    const moonPosition = new THREE.Vector3();
+    planets[1].mesh.getWorldPosition(moonPosition);
+
+    // 更新目标点到房子的位置
+    sunTarget.position.set(house.position.x, house.position.y, house.position.z);
+    moonTarget.position.set(house.position.x, house.position.y, house.position.z);
+
+    // 更新光源位置
+    sunLight.position.copy(sunPosition);
+    moonLight.position.copy(moonPosition);
+
+    // 动态更新光源目标点
+    sunLight.target.position.copy(house.position);
+    moonLight.target.position.copy(house.position);
+
 
     let time = clock.getElapsedTime();
 
@@ -458,7 +483,7 @@ function animate() {
     if (isMoving) {
         const delta = targetPosition.clone().sub(chosenPet.position);
         const distanceToTarget = delta.length();
-    
+
         if (distanceToTarget > moveSpeed) {
             // Normalize direction and move
             delta.normalize().multiplyScalar(moveSpeed);
@@ -468,7 +493,7 @@ function animate() {
             chosenPet.position.copy(targetPosition);
             isMoving = false; // Stop moving
         }
-    
+
         // Adjust height based on the environment
         adjustPetHeight();
     }
@@ -514,7 +539,10 @@ function animate() {
         const tiltAngle = Math.PI / 4; // 45 degrees
         const rotAngle = Math.PI / 2;
 
+
         let model_transform;
+
+
         if (index === 0) { // Sun Rotation
             // Sun-specific orbit: Tilted at 45 degrees
             model_transform = new THREE.Matrix4()

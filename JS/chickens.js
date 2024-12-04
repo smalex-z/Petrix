@@ -73,4 +73,12 @@ chicken.position.set(2, earthRadius, 2); // 放置在地面上
 // 缩小鸡的大小
 chicken.scale.set(0.2, 0.2, 0.2);
 
+// 确保鸡的所有子对象启用投射阴影
+chicken.traverse((node) => {
+    if (node.isMesh) {
+        node.castShadow = true; // 允许投射阴影
+        node.receiveShadow = true; // 允许接收阴影
+    }
+});
+
 export { chicken };

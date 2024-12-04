@@ -7,7 +7,7 @@ let planets = [];
 const textureLoader = new THREE.TextureLoader();
 
 // Create the Earth
-let earth_geom = new THREE.SphereGeometry(earthRadius, 32, 32);
+let earth_geom = new THREE.SphereGeometry(earthRadius, 128, 128);
 const earthTexture = textureLoader.load('../assets/images/earth.jpg');
 
 const earthMaterial = new THREE.MeshStandardMaterial({ 

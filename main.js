@@ -269,7 +269,7 @@ function checkCollisions() {
 
     // If the pet is too close to the house, adjust its position
     if (distanceToHouse < safeZoneRadius) {
-        console.log("Pet is trying to enter the safe zone. Adjusting position.");
+        //console.log("Pet is trying to enter the safe zone. Adjusting position.");
 
         // Move the pet outward to maintain the safe zone radius
         const moveDistance = safeZoneRadius - distanceToHouse;
@@ -278,7 +278,7 @@ function checkCollisions() {
 
     // Check if the pet is inside the buffer zone and move it away if necessary
     if (petBoundingBox.intersectsBox(bufferedBoundingBox) && !collisionCooldown) {
-        console.log("Collision detected! Moving pet away.");
+        //console.log("Collision detected! Moving pet away.");
 
         // Move the pet outward based on the buffer zone
         const moveDistance = 0.5; // Adjust the distance to fully clear the buffer zone

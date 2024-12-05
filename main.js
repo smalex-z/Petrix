@@ -263,44 +263,35 @@ function checkCollisions() {
     const bufferedBoundingBox = houseBoundingBox.clone();
     bufferedBoundingBox.expandByScalar(0.5); // Adjust buffer size as needed
 
-    // Check if pet is inside the buffer zone
+    // Calculate distance and direction between pet and house
+    const direction = chosenPet.position.clone().sub(importHouse.position).normalize();
+    const distanceToHouse = chosenPet.position.distanceTo(importHouse.position);
+
+    // If the pet is too close to the house, adjust its position
+    if (distanceToHouse < safeZoneRadius) {
+        console.log("Pet is trying to enter the safe zone. Adjusting position.");
+
+        // Move the pet outward to maintain the safe zone radius
+        const moveDistance = safeZoneRadius - distanceToHouse;
+        chosenPet.position.add(direction.multiplyScalar(moveDistance));
+    }
+
+    // Check if the pet is inside the buffer zone and move it away if necessary
     if (petBoundingBox.intersectsBox(bufferedBoundingBox) && !collisionCooldown) {
         console.log("Collision detected! Moving pet away.");
 
-        // Calculate direction vector away from the house
-        const direction = chosenPet.position.clone().sub(importHouse.position).normalize();
+        // Move the pet outward based on the buffer zone
+        const moveDistance = 0.5; // Adjust the distance to fully clear the buffer zone
+        chosenPet.position.add(direction.multiplyScalar(moveDistance));
 
-        // Move the pet away from the house
-        const moveAwayDistance = 4.0; // Adjust the distance to fully clear the buffer zone
-        chosenPet.position.lerp(
-            chosenPet.position.clone().add(direction.multiplyScalar(moveAwayDistance)),
-            0.1 // Adjust the lerp factor for smoothness
-        );
-        // Set the safe zone and activate cooldown
-        isInSafeZone = true;
+        // Activate cooldown to prevent rapid collision responses
         collisionCooldown = true;
-
-        // Reset cooldown after a short delay
         setTimeout(() => {
             collisionCooldown = false;
-        }, 1000); // 1-second cooldown to prevent rapid collision checks
-    }
-
-    // Ensure the pet stays outside the safe zone
-    if (isInSafeZone) {
-        const distanceToHouse = chosenPet.position.distanceTo(importHouse.position);
-        if (distanceToHouse < safeZoneRadius) {
-            console.log("Pet is trying to re-enter the safe zone. Adjusting position.");
-
-            // Push the pet outward again
-            const direction = chosenPet.position.clone().sub(importHouse.position).normalize();
-            chosenPet.position.add(direction.multiplyScalar(0.5)); // Gentle adjustment outward
-        } else {
-            // Pet has fully cleared the safe zone
-            isInSafeZone = false;
-        }
+        }, 1000); // 1-second cooldown
     }
 }
+
 
 
 // This function is used to update the uniform of the planet's materials in the animation step. No need to make any change

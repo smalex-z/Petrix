@@ -1,10 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { scene, earthRadius, housePosition } from './globalVar.js';
-import { updatePetStatusDisplay } from './status.js';
-import { sheep } from './sheep';
-import { dog } from './dog';
-import { chicken } from './chickens.js';
+import { scene, housePosition, adjustItemHeight } from './globalVar.js';
+
 
 //Making a basic house on the planet 
 //NOT USED ATM
@@ -46,14 +43,11 @@ const house = createHouse();
 house.position.set(0, 0.5, 0); // 调整屋子的高度和位置
 // 确保房子的所有子对象启用阴影
 
-export { house };
-
 // FULL CREDIT TO THE CREATOR FOR THE HOUSE MODEL HERE:
 // https://sketchfab.com/3d-models/stardew-valley-cabin-98daf2e9e1c0468cbb322c1a97d672a1
 const loader = new GLTFLoader();
 let importHouse;
 
-let houseBoundingBox = new THREE.Box3();
 loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     //House 
     importHouse = gltf.scene; // Get the house object
@@ -74,51 +68,12 @@ loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     const blockGeometry = new THREE.BoxGeometry(3, .5, 3); // Adjust size as needed
     const blockMaterial = new THREE.MeshStandardMaterial({ color: 0x6b8530 }); // Green color
     const supportBlock = new THREE.Mesh(blockGeometry, blockMaterial);
+    supportBlock.position.set(housePosition.x - .375, 0, housePosition.z - .45);
 
     scene.add(supportBlock);
-    houseBoundingBox.setFromObject(importHouse);
 
-
-    adjustHouseHeight(importHouse, earthRadius);
-    adjustBlockHeight(supportBlock, earthRadius);
-
+    adjustItemHeight(importHouse, 0);
+    adjustItemHeight(supportBlock, .25);
 });
 
-function adjustHouseHeight(house, earthRadius) {
-    const x = house.position.x;
-    const z = house.position.z;
-    const y = Math.sqrt(Math.max(0, earthRadius ** 2 - x ** 2 - z ** 2));
-    house.position.y = y;
-}
-
-function adjustBlockHeight(block, earthRadius) {
-    const x = housePosition.x - .375;
-    const z = housePosition.z - .45;
-    const y = Math.sqrt(Math.max(0, earthRadius ** 2 - x ** 2 - z ** 2)) - .25;
-    block.position.set(x, y, z); // Adjust position as needed
-}
-
-function checkPetHouseInteraction() {
-    const distanceToHouseSheep = sheep.position.distanceTo(house.position);
-    const distanceToHouseDog = dog.position.distanceTo(house.position);
-    const distanceToHouseChicken = chicken.position.distanceTo(house.position);
-
-
-    // if (distanceToHouseChicken < 2) { // Interaction range
-    //     console.log('Pet is near the house.');
-    //     // Example: Increase happiness or other stats
-    //     updatePetStatusDisplay();
-    // }
-    // if (distanceToHouseDog < 2) { // Interaction range
-    //     console.log('Pet is near the house.');
-    //     // Example: Increase happiness or other stats
-    //     updatePetStatusDisplay();
-    // }
-    // if (distanceToHouseSheep < 2) { // Interaction range
-    //     console.log('Pet is near the house.');
-    //     // Example: Increase happiness or other stats
-    //     updatePetStatusDisplay();
-    // }
-}
-
-export { checkPetHouseInteraction, houseBoundingBox, importHouse };
+export { importHouse, house };

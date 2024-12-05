@@ -1,8 +1,10 @@
 import * as THREE from 'three';
-import { scene, earthRadius } from './globalVar.js';
+const earthRadius = 48;
 
 // 创建一个对象来表示狗
 const dog = new THREE.Group();
+dog.isMoving = false; // Add a custom property to track movement
+dog.targetPosition = new THREE.Vector3(); // 目标位置
 
 // 创建身体
 const bodyGeometry = new THREE.BoxGeometry(2, 1, 1); // 宽度、高度、深度

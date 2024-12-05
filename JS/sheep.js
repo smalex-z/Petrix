@@ -1,8 +1,10 @@
 import * as THREE from 'three';
-import { scene, earthRadius } from './globalVar.js'
+const earthRadius = 48;
 
 // 创建一个对象来表示羊
 const sheep = new THREE.Group();
+sheep.isMoving = false; // Add a custom property to track movement
+sheep.targetPosition = new THREE.Vector3(); // 目标位置
 
 // 创建身体
 const bodyGeometry = new THREE.BoxGeometry(2, 1, 1); // 宽度、高度、深度
@@ -54,8 +56,6 @@ sheep.position.set(2, earthRadius + 0.3, 2); // 放置在地面上
 
 // 将羊添加到场景中
 // 创建宠物网格
-const pet = sheep;
-
 sheep.scale.set(0.2, 0.2, 0.2); // 缩小羊的大小
 
 // 确保羊的所有子对象启用投射阴影

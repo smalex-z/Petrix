@@ -1,114 +1,30 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, MIN_STATUS, MAX_STATUS } from './JS/globalVar.js';
-
-import { sheep } from './JS/sheep';
-import { dog } from './JS/dog';
-import { chicken } from './JS/chickens.js';
-
-import { importHouse } from './JS/house.js';
+import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, 
+    MIN_STATUS, MAX_STATUS, chosenPet, initializeUnselectedPets  } from './JS/globalVar.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
+import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
+import { createPetSelectionPopup, pauseBeforeSelection, setupBoundingBoxes, toggleBoundingBoxes, updateBoundingBoxes } from './JS/setup.js';
+import { sunLight, moonLight, sunTarget, moonTarget, updateBackgroundColor } from './JS/lighting.js';
+import { performRandomAction, movePet, adjustPetHeight, isMoving, setMoving, targetPosition } from './JS/movement.js';;
+
+import { importHouse, house } from './JS/house.js';
 import { planets, orbitDistance } from './JS/planets.js';
-import './JS/lighting.js';
 import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
-import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 
-import { createPetSelectionPopup, pauseBeforeSelection, setupBoundingBoxes, toggleBoundingBoxes, updateBoundingBoxes } from './JS/setup.js';
 
-import { sunLight, moonLight, sunTarget, moonTarget } from './JS/lighting.js';
-import { house } from './JS/house.js'; // house 也需要定义
 
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
 const actionInterval = 1; // 动作间隔时间（秒）
-const moveDistance = 0.4; // 每步移动的距离
-const maxRadius = 4; // 羊活动的最大半径
 const moveSpeed = 0.05; // 羊移动的速度
 
-let isMoving = false; // 羊是否正在移动
-let targetPosition = new THREE.Vector3(); // 目标位置
 const blinkInterval = 500; // 闪烁间隔，单位为毫秒
 
 let clock = new THREE.Clock();
 // Create additional variables as needed here
 var petBoundingBox;
 var houseBoundingBox;
-export let chosenPet;
-
-
-function performRandomAction() {
-    // 移除以下行，让羊在每次动作间隔都能执行新的随机动作
-    // if (isMoving) return;
-
-    const action = Math.floor(Math.random() * 5);
-
-    switch (action) {
-        case 0:
-            // 不动
-            isMoving = false;
-            break;
-        case 1:
-            // 左转
-            chosenPet.rotation.y += Math.PI / 2;
-            break;
-        case 2:
-            // 右转
-            chosenPet.rotation.y -= Math.PI / 2;
-            break;
-        case 3:
-            // 前进两步
-            movePet(moveDistance * 2);
-            break;
-        case 4:
-            // 后退两步
-            chosenPet.rotation.y += Math.PI; // 转身
-            movePet(moveDistance * 2);
-            break;
-    }
-}
-
-function movePet(distance) {
-    const direction = new THREE.Vector3(0, 0, 1);
-    direction.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), chosenPet.rotation.y));
-
-    const newPosition = chosenPet.position.clone().add(direction.multiplyScalar(distance));
-
-    const distanceFromCenter = Math.sqrt(newPosition.x ** 2 + newPosition.z ** 2);
-
-    if (distanceFromCenter <= maxRadius) {
-        targetPosition.copy(newPosition);
-        isMoving = true;
-    } else {
-        // Beyond the range, turn around and try to move again
-        chosenPet.rotation.y += Math.PI;
-
-        // Calculate the new direction and location
-        const adjustedDirection = new THREE.Vector3(0, 0, 1);
-        adjustedDirection.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), chosenPet.rotation.y));
-
-        const adjustedNewPosition = chosenPet.position.clone().add(adjustedDirection.multiplyScalar(distance));
-
-        const adjustedDistanceFromCenter = adjustedNewPosition.length();
-
-        if (adjustedDistanceFromCenter <= maxRadius) {
-            targetPosition.copy(adjustedNewPosition);
-            isMoving = true;
-        } else {
-            // If it is still exceeded and does not move, you can try other actions in the next random action.
-            chosenPet.rotation.y += Math.PI;
-        }
-    }
-}
-
-function adjustPetHeight() {
-    const x = chosenPet.position.x;
-    const z = chosenPet.position.z;
-
-    const y = Math.sqrt(Math.max(0, earthRadius * earthRadius - x * x - z * z));
-
-    chosenPet.position.y = y + 0.2; //0.2 是羊离地面的高度
-}
-
 
 
 // 获取交互栏的元素
@@ -383,90 +299,9 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
-// Day and night system
-function updateBackgroundColor(normalizedAngle, isDay) {
-    let color;
-
-    if (isDay) {
-        // Daytime logic
-        if (normalizedAngle < 0.125) {
-            // Early Day (Soft Blue)
-            const intensity = Math.abs((normalizedAngle) / 0.125); // Normalize from 0 to 1
-            color = new THREE.Color(
-                0.1 * intensity, // R: Increase red component for light blue
-                0.2 * intensity, // G: Increase green component for light blue
-                0.3 * intensity  // B: Increase blue component for light blue
-            );
-
-        } else if (normalizedAngle >= 0.125 && normalizedAngle < .25) {
-            // Midday (Light Blue to Bright Blue)
-            const middayIntensity = 1 - (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
-            color = new THREE.Color(
-                0.1 + 0.4 * (middayIntensity), // R: Light blue to bright blue
-                0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
-                0.3 + 0.65 * (middayIntensity)  // B: Light blue to bright blue
-            );
-
-        } else if (normalizedAngle >= .25 && normalizedAngle < .375) {
-            // Mid to late day (Bright Blue to light pink)
-            const middayIntensity = Math.abs((0.375 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
-            color = new THREE.Color(
-                0.5 + 0 * (middayIntensity), // R: Light blue to bright blue
-                0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
-                0.35 + 0.6 * (middayIntensity)  // B: Light blue to bright blue
-            );
-        } else if (normalizedAngle >= .375 && normalizedAngle < .5) {
-            // late day (light pink to orange)
-            const middayIntensity = Math.abs((0.5 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
-            color = new THREE.Color(
-                0.7 - .2 * (middayIntensity), // R: Light blue to bright blue
-                0.25 - .05 * (middayIntensity), // G: Light green to bright green
-                0.1 + 0.15 * (middayIntensity)  // B: Light blue to bright blue
-            );
-        }
-        else {
-
-        }
-    } else {
-        if (normalizedAngle >= .5 && normalizedAngle < .625) {
-            // Late Day (orange to black)
-            const lateDayIntensity = Math.abs((.625 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
-            color = new THREE.Color(
-                .7 * (lateDayIntensity),   // R: Constant for warm yellow
-                0.25 * (lateDayIntensity), // G: Fade green
-                0.1 * (lateDayIntensity)  // B: Fade blue
-            );
-        } else {
-            // Nighttime logic
-            color = new THREE.Color(
-                0,
-                0,
-                0,
-            );
-        }
-    }
-
-    scene.background = color;
-}
-
 function startGame(selectedPet) {
-    if (selectedPet === 'sheep') {
-        chosenPet = sheep;
-    } else if (selectedPet === 'dog') {
-        chosenPet = dog;
-    } else if (selectedPet === 'chicken') {
-        chosenPet = chicken;
-    }
-    scene.add(chosenPet);
-
-    chosenPet.castShadow = true; // 启用宠物投射阴影
-    chosenPet.receiveShadow = true; // 启用宠物接收阴影
-
-    chosenPet.add(hungerSprite);
-    chosenPet.add(hygieneSprite);
-    chosenPet.add(happinessSprite);
-
+    
+    initializeUnselectedPets(selectedPet)
     // Bounding Boxes
     petBoundingBox = new THREE.Box3().setFromObject(chosenPet);
     houseBoundingBox = new THREE.Box3().setFromObject(importHouse);
@@ -526,7 +361,7 @@ function animate() {
         } else {
             // Snap to the target position
             chosenPet.position.copy(targetPosition);
-            isMoving = false; // Stop moving
+            setMoving(false); // Stop moving
         }
 
         // Adjust height based on the environment

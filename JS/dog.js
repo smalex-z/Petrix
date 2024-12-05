@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, earthRadius } from './globalVar.js';
+const earthRadius = 48;
 
 // 创建一个对象来表示狗
 const dog = new THREE.Group();

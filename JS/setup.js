@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-import { startGame, chosenPet } from '../main.js';
-import { scene, renderer, earthRadius } from './globalVar.js';
+import { startGame } from '../main.js';
+import { scene, renderer, chosenPet, adjustItemHeight } from './globalVar.js';
 import { importHouse } from './house.js';
 
-
+// Pets Setup
 export function createPetSelectionPopup() {
     const popup = document.getElementById('pet-selection-popup');
     const petOptions = document.getElementById('pet-options');
@@ -95,7 +95,6 @@ export function createTrees() {
 
     // Load the tree model once and replicate
     loader.load('../assets/pine-tree/scene_textured.gltf', function (gltf) {
-        console.log('Loaded GLTF:', gltf);
         for (let j = 0; j < 4; j++){
             for (let i = 0; i < treeCount[j]; i++) {
                 const angle = (i / treeCount[j]) * Math.PI * 2; // Angle in radians for each tree
@@ -123,7 +122,7 @@ export function createTrees() {
                 });
 
                 // Adjust height based on the terrain
-                adjustTreeHeight(tree);
+                adjustItemHeight(tree, .2);
 
                 // Add the tree to the scene
                 scene.add(tree);
@@ -139,13 +138,5 @@ export function createTrees() {
         const g = Math.floor(Math.random() * 100) + 50; // Moderate green (50 to 149)
         const b = Math.floor(Math.random() * 30); // Very low blue (0 to 29)
         return (r << 16) | (g << 8) | b; // Combine RGB into a hexadecimal color
-    }
-
-    function adjustTreeHeight(tree) {
-        const x = tree.position.x;
-        const z = tree.position.z;
-        const y = Math.sqrt(Math.max(0, earthRadius ** 2 - x ** 2 - z ** 2));
-        tree.position.y = y - 0.2; // Offset to ensure it's above terrain
-        console.log(`Tree height adjusted to: ${tree.position.x}, ${tree.position.y}, ${tree.position.z}`);
     }
 }

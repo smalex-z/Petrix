@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+import { sheep } from './sheep';
+import { dog } from './dog';
+import { chicken } from './chickens.js';
+import { hungerSprite, hygieneSprite, happinessSprite } from './icons.js';
+import { importHouse } from './house.js';
+
+
+
 //Main
 var iconIndex = {
     currentIconIndex: 0, // Store the value as a property of an object
@@ -20,6 +28,45 @@ const sunRadius = 8;
 var defaultCamPos = new THREE.Vector3(0, earthRadius + 6, 16);
 var defaultLook = new THREE.Vector3(0, earthRadius + 2, 0);
 const housePosition = new THREE.Vector3(4, 0, 0); //Don't Touch Y value
+
+// Pets
+var chosenPet;
+var unselectedPets = [];
+
+export function initializeUnselectedPets(selectedPet) {
+    if (selectedPet === 'sheep') {
+        chosenPet = sheep;
+        unselectedPets.push(dog);
+        unselectedPets.push(chicken);
+    } else if (selectedPet === 'dog') {
+        chosenPet = dog;
+        unselectedPets.push(sheep);
+        unselectedPets.push(chicken);
+    } else if (selectedPet === 'chicken') {
+        chosenPet = chicken;
+        unselectedPets.push(dog);
+        unselectedPets.push(sheep);
+    }
+    
+    // Filter out the chosen pet
+    chosenPet.castShadow = true; // 启用宠物投射阴影
+    chosenPet.receiveShadow = true; // 启用宠物接收阴影
+
+    chosenPet.add(hungerSprite);
+    chosenPet.add(hygieneSprite);
+    chosenPet.add(happinessSprite);
+
+    // Set initial positions for unselected pets
+    unselectedPets[0].position.set(importHouse.position.x - 8, importHouse.position.y, importHouse.position.z -2);
+    unselectedPets[1].position.set(importHouse.position.x - 5, importHouse.position.y, importHouse.position.z -2);
+
+    scene.add(chosenPet);
+
+    unselectedPets.forEach(pet => {
+        adjustItemHeight(pet, -.2);
+        scene.add(pet);
+    });
+}
 
 // Status
 // 定义状态的最大值和最小值
@@ -44,7 +91,15 @@ controls.enabled = true;
 controls.minDistance = 10;
 controls.maxDistance = 1000;
 
+function adjustItemHeight(item, offset) {
+    const x = item.position.x;
+    const z = item.position.z;
+    const y = Math.sqrt(Math.max(0, earthRadius ** 2 - x ** 2 - z ** 2)) - offset;
+    item.position.y = y;
+}
+
 export {
     scene, camera, renderer, controls, defaultCamPos, defaultLook, housePosition, blinkTime,
-    iconIndex, earthRadius, sunRadius, moonRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS
+    iconIndex, earthRadius, sunRadius, moonRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS,
+    chosenPet, unselectedPets, adjustItemHeight
 }

@@ -54,4 +54,70 @@ scene.add(ground);
 const ambientLight = new THREE.AmbientLight(0x404040, 1);
 scene.add(ambientLight);
 
-export { sunLight, moonLight, ambientLight, sunTarget, moonTarget };
+// Day and night system
+function updateBackgroundColor(normalizedAngle, isDay) {
+    let color;
+
+    if (isDay) {
+        // Daytime logic
+        if (normalizedAngle < 0.125) {
+            // Early Day (Soft Blue)
+            const intensity = Math.abs((normalizedAngle) / 0.125); // Normalize from 0 to 1
+            color = new THREE.Color(
+                0.1 * intensity, // R: Increase red component for light blue
+                0.2 * intensity, // G: Increase green component for light blue
+                0.3 * intensity  // B: Increase blue component for light blue
+            );
+
+        } else if (normalizedAngle >= 0.125 && normalizedAngle < .25) {
+            // Midday (Light Blue to Bright Blue)
+            const middayIntensity = 1 - (0.25 - normalizedAngle) / 0.125; // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                0.1 + 0.4 * (middayIntensity), // R: Light blue to bright blue
+                0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
+                0.3 + 0.65 * (middayIntensity)  // B: Light blue to bright blue
+            );
+
+        } else if (normalizedAngle >= .25 && normalizedAngle < .375) {
+            // Mid to late day (Bright Blue to light pink)
+            const middayIntensity = Math.abs((0.375 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                0.5 + 0 * (middayIntensity), // R: Light blue to bright blue
+                0.2 + 0.6 * (middayIntensity), // G: Light green to bright green
+                0.35 + 0.6 * (middayIntensity)  // B: Light blue to bright blue
+            );
+        } else if (normalizedAngle >= .375 && normalizedAngle < .5) {
+            // late day (light pink to orange)
+            const middayIntensity = Math.abs((0.5 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                0.7 - .2 * (middayIntensity), // R: Light blue to bright blue
+                0.25 - .05 * (middayIntensity), // G: Light green to bright green
+                0.1 + 0.15 * (middayIntensity)  // B: Light blue to bright blue
+            );
+        }
+        else {
+
+        }
+    } else {
+        if (normalizedAngle >= .5 && normalizedAngle < .625) {
+            // Late Day (orange to black)
+            const lateDayIntensity = Math.abs((.625 - normalizedAngle) / 0.125); // Normalize to fade from 0 to 1
+            color = new THREE.Color(
+                .7 * (lateDayIntensity),   // R: Constant for warm yellow
+                0.25 * (lateDayIntensity), // G: Fade green
+                0.1 * (lateDayIntensity)  // B: Fade blue
+            );
+        } else {
+            // Nighttime logic
+            color = new THREE.Color(
+                0,
+                0,
+                0,
+            );
+        }
+    }
+
+    scene.background = color;
+}
+
+export { sunLight, moonLight, ambientLight, sunTarget, moonTarget, updateBackgroundColor };

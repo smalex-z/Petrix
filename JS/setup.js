@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { startGame, chosenPet } from '../main.js';
 import { scene, renderer } from './globalVar.js';
-import { houseBoundingBox, importHouse } from './house.js';
+import { importHouse } from './house.js';
 
 
 export function createPetSelectionPopup() {
@@ -53,6 +53,8 @@ export function pauseBeforeSelection() {
 let isBoundingBoxVisible = false; // Tracks if bounding boxes are visible
 let petBoxHelper, houseBoxHelper; // BoxHelpers for the pet and house
 export function setupBoundingBoxes() {
+    
+
     // Create bounding box helpers
     petBoxHelper = new THREE.BoxHelper(chosenPet, 0xff0000); // Red for pet
     houseBoxHelper = new THREE.BoxHelper(importHouse, 0x0000ff); // Blue for house

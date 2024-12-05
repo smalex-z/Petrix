@@ -52,7 +52,6 @@ export { house };
 const loader = new GLTFLoader();
 let importHouse;
 
-let houseBoundingBox = new THREE.Box3();
 loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     //House 
     importHouse = gltf.scene; // Get the house object
@@ -75,8 +74,6 @@ loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     const supportBlock = new THREE.Mesh(blockGeometry, blockMaterial);
 
     scene.add(supportBlock);
-    houseBoundingBox.setFromObject(importHouse);
-
 
     adjustHouseHeight(importHouse, earthRadius);
     adjustBlockHeight(supportBlock, earthRadius);
@@ -97,27 +94,4 @@ function adjustBlockHeight(block, earthRadius) {
     block.position.set(x, y, z); // Adjust position as needed
 }
 
-function checkPetHouseInteraction() {
-    const distanceToHouseSheep = sheep.position.distanceTo(house.position);
-    const distanceToHouseDog = dog.position.distanceTo(house.position);
-    const distanceToHouseChicken = chicken.position.distanceTo(house.position);
-
-
-    // if (distanceToHouseChicken < 2) { // Interaction range
-    //     console.log('Pet is near the house.');
-    //     // Example: Increase happiness or other stats
-    //     updatePetStatusDisplay();
-    // }
-    // if (distanceToHouseDog < 2) { // Interaction range
-    //     console.log('Pet is near the house.');
-    //     // Example: Increase happiness or other stats
-    //     updatePetStatusDisplay();
-    // }
-    // if (distanceToHouseSheep < 2) { // Interaction range
-    //     console.log('Pet is near the house.');
-    //     // Example: Increase happiness or other stats
-    //     updatePetStatusDisplay();
-    // }
-}
-
-export { checkPetHouseInteraction, houseBoundingBox, importHouse };
+export { importHouse };

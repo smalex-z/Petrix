@@ -5,7 +5,7 @@ import { sheep } from './JS/sheep';
 import { dog } from './JS/dog';
 import { chicken } from './JS/chickens.js';
 
-import { houseBoundingBox, importHouse } from './JS/house.js';
+import { importHouse } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
@@ -17,9 +17,6 @@ import { createPetSelectionPopup, pauseBeforeSelection, setupBoundingBoxes, togg
 
 import { sunLight, moonLight, sunTarget, moonTarget } from './JS/lighting.js';
 import { house } from './JS/house.js'; // house 也需要定义
-
-
-var petBoundingBox; 
 
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
@@ -34,7 +31,8 @@ const blinkInterval = 500; // 闪烁间隔，单位为毫秒
 
 let clock = new THREE.Clock();
 // Create additional variables as needed here
-
+var petBoundingBox;
+var houseBoundingBox;
 export let chosenPet;
 
 
@@ -223,29 +221,6 @@ function updateLifeDecreaseInterval() {
     }
 }
 
-
-
-function getHungerRange(hunger) {
-    if (hunger >= 0 && hunger <= 10) {
-        return 1;
-    } else if (hunger > 10 && hunger <= 20) {
-        return 2;
-    } else if (hunger > 20 && hunger <= 30) {
-        return 3;
-    } else if (hunger > 30 && hunger <= 40) {
-        return 4;
-    } else if (hunger > 40 && hunger <= 50) {
-        return 5;
-    } else if (hunger > 50 && hunger <= 70) {
-        return 6;
-    } else if (hunger > 70 && hunger <= 100) {
-        return 7;
-    } else {
-        return 0;
-    }
-}
-
-
 function petDies() {
     alert('Your Pet has Died'); //TODO: death screen
     scene.remove(chosenPet);
@@ -254,7 +229,6 @@ function petDies() {
     clearInterval(lifeDecreaseInterval);
     lifeDecreaseInterval = null;
 }
-
 
 
 
@@ -327,8 +301,6 @@ function checkCollisions() {
         }
     }
 }
-
-
 
 
 // This function is used to update the uniform of the planet's materials in the animation step. No need to make any change
@@ -504,12 +476,13 @@ function startGame(selectedPet) {
     chosenPet.add(hygieneSprite);
     chosenPet.add(happinessSprite);
 
+    // Bounding Boxes
     petBoundingBox = new THREE.Box3().setFromObject(chosenPet);
-    chosenPet.position.set(importHouse.position.x - 2, importHouse.position.y, importHouse.position.z);
+    houseBoundingBox = new THREE.Box3().setFromObject(importHouse);
+
     setupBoundingBoxes();
 
     animate(); // Resume rendering
-
 }
 renderer.shadowMap.enabled = true; // 启用阴影映射
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 使用柔和阴影

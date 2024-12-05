@@ -506,9 +506,6 @@ function startGame(selectedPet) {
 }
 renderer.shadowMap.enabled = true; // 启用阴影映射
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 使用柔和阴影
-function pauseBeforeSelection() {
-    renderer.setAnimationLoop(null);
-}
 
 function animate() {
 

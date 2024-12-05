@@ -5,7 +5,7 @@ import { sheep } from './JS/sheep';
 import { dog } from './JS/dog';
 import { chicken } from './JS/chickens.js';
 
-import { checkPetHouseInteraction } from './JS/house.js';
+import { houseBoundingBox, importHouse } from './JS/house.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { planets, orbitDistance } from './JS/planets.js';
 import './JS/lighting.js';
@@ -19,10 +19,11 @@ import { sunLight, moonLight, sunTarget, moonTarget } from './JS/lighting.js';
 import { house } from './JS/house.js'; // house 也需要定义
 
 
+var petBoundingBox; 
 
 // 全局变量
 let lastActionTime = 0; // 上次动作的时间
-const actionInterval = 2; // 动作间隔时间（秒）
+const actionInterval = 1; // 动作间隔时间（秒）
 const moveDistance = 0.4; // 每步移动的距离
 const maxRadius = 4; // 羊活动的最大半径
 const moveSpeed = 0.05; // 羊移动的速度
@@ -265,8 +266,64 @@ window.addEventListener('resize', onWindowResize, false);
 // Handle keyboard input
 document.addEventListener('keydown', (event) => handleCameraAttachment(event, planets), false);
 
-// pauseBeforeSelection ();
+pauseBeforeSelection();
 createPetSelectionPopup();
+let isCollisionResolved = false; // Track if collision is resolved
+
+
+
+let isInSafeZone = false; // Tracks if the pet is in the safe zone
+let safeZoneRadius = 2.5; // Minimum distance pet must maintain from the house
+let collisionCooldown = false; // Cooldown to prevent repeated collisions
+
+function checkCollisions() {
+    // Update bounding boxes
+    petBoundingBox.setFromObject(chosenPet);
+    houseBoundingBox.setFromObject(importHouse);
+
+    // Create a buffer zone by expanding the house's bounding box
+    const bufferedBoundingBox = houseBoundingBox.clone();
+    bufferedBoundingBox.expandByScalar(0.5); // Adjust buffer size as needed
+
+    // Check if pet is inside the buffer zone
+    if (petBoundingBox.intersectsBox(bufferedBoundingBox) && !collisionCooldown) {
+        console.log("Collision detected! Moving pet away.");
+
+        // Calculate direction vector away from the house
+        const direction = chosenPet.position.clone().sub(importHouse.position).normalize();
+
+        // Move the pet away from the house
+        const moveDistance = 2.0; // Adjust the distance to fully clear the buffer zone
+        chosenPet.position.add(direction.multiplyScalar(moveDistance));
+
+        // Set the safe zone and activate cooldown
+        isInSafeZone = true;
+        collisionCooldown = true;
+
+        // Reset cooldown after a short delay
+        setTimeout(() => {
+            collisionCooldown = false;
+        }, 1000); // 1-second cooldown to prevent rapid collision checks
+    }
+
+    // Ensure the pet stays outside the safe zone
+    if (isInSafeZone) {
+        const distanceToHouse = chosenPet.position.distanceTo(importHouse.position);
+        if (distanceToHouse < safeZoneRadius) {
+            console.log("Pet is trying to re-enter the safe zone. Adjusting position.");
+
+            // Push the pet outward again
+            const direction = chosenPet.position.clone().sub(importHouse.position).normalize();
+            chosenPet.position.add(direction.multiplyScalar(0.5)); // Gentle adjustment outward
+        } else {
+            // Pet has fully cleared the safe zone
+            isInSafeZone = false;
+        }
+    }
+}
+
+
+
 
 // This function is used to update the uniform of the planet's materials in the animation step. No need to make any change
 function updatePlanetMaterialUniforms(planet) {
@@ -440,11 +497,18 @@ function startGame(selectedPet) {
     chosenPet.add(hungerSprite);
     chosenPet.add(hygieneSprite);
     chosenPet.add(happinessSprite);
+
+    petBoundingBox = new THREE.Box3().setFromObject(chosenPet);
+    chosenPet.position.set(importHouse.position.x - 2, importHouse.position.y, importHouse.position.z);
+
     animate(); // Resume rendering
 
 }
 renderer.shadowMap.enabled = true; // 启用阴影映射
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 使用柔和阴影
+function pauseBeforeSelection() {
+    renderer.setAnimationLoop(null);
+}
 
 function animate() {
 
@@ -477,10 +541,12 @@ function animate() {
         lastActionTime = time;
     }
 
-
+    checkCollisions();
+   
 
     // Update the location of sheep
     if (isMoving) {
+        checkCollisions();
         const delta = targetPosition.clone().sub(chosenPet.position);
         const distanceToTarget = delta.length();
 
@@ -514,7 +580,7 @@ function animate() {
             blinkTime.lastBlinkTime = now;
         }
     }
-    checkPetHouseInteraction();
+
 
     // 更新图标的朝向，使其面向摄像机
     [hungerSprite, hygieneSprite, happinessSprite].forEach(sprite => {

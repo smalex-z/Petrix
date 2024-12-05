@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import { startGame } from '../main.js';
-import { scene, renderer, chosenPet, adjustItemHeight } from './globalVar.js';
+import { scene, renderer, chosenPet, unselectedPets, adjustItemHeight } from './globalVar.js';
 import { importHouse } from './house.js';
 
 // Pets Setup
@@ -53,13 +53,13 @@ export function pauseBeforeSelection() {
 
 //Bounding Box Visibility
 let isBoundingBoxVisible = false; // Tracks if bounding boxes are visible
-let petBoxHelper, houseBoxHelper; // BoxHelpers for the pet and house
+let petBoxHelper, houseBoxHelper,unselectedPetsHelper; // BoxHelpers for the pet and house
 export function setupBoundingBoxes() {
     
-
     // Create bounding box helpers
     petBoxHelper = new THREE.BoxHelper(chosenPet, 0xff0000); // Red for pet
     houseBoxHelper = new THREE.BoxHelper(importHouse, 0x0000ff); // Blue for house
+    unselectedPetsHelper = unselectedPets.map((pet) => new THREE.BoxHelper(pet, 0xff0000));
 
     // Initially hide the helpers
     petBoxHelper.visible = false;
@@ -68,6 +68,11 @@ export function setupBoundingBoxes() {
     // Add helpers to the scene
     scene.add(petBoxHelper);
     scene.add(houseBoxHelper);
+
+    unselectedPetsHelper.forEach((box) => {
+        box.visible = false;
+        scene.add(box)
+    });
 }
 
 
@@ -75,6 +80,9 @@ export function updateBoundingBoxes() {
     // Update the bounding boxes dynamically
     petBoxHelper.update();
     houseBoxHelper.update();
+    unselectedPetsHelper.forEach((box) => {
+        box.update()
+    });
 }
 
 export function toggleBoundingBoxes() {
@@ -83,6 +91,9 @@ export function toggleBoundingBoxes() {
     // Toggle visibility of the helpers
     petBoxHelper.visible = isBoundingBoxVisible;
     houseBoxHelper.visible = isBoundingBoxVisible;
+    unselectedPetsHelper.forEach((box) => {
+        box.visible = isBoundingBoxVisible;
+    });
 }
 
 createTrees();

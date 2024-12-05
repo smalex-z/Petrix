@@ -26,6 +26,8 @@ let clock = new THREE.Clock();
 // Create additional variables as needed here
 var petBoundingBox;
 var houseBoundingBox;
+var unselectedPetsBoundingBoxes = [];
+
 
 
 // 获取交互栏的元素
@@ -176,6 +178,10 @@ function checkCollisions() {
     petBoundingBox.setFromObject(chosenPet);
     houseBoundingBox.setFromObject(importHouse);
 
+    unselectedPetsBoundingBoxes.forEach((boundingBox, index) => {
+        boundingBox.setFromObject(unselectedPets[index]);
+    });
+
     // Create a buffer zone by expanding the house's bounding box
     const bufferedBoundingBox = houseBoundingBox.clone();
     bufferedBoundingBox.expandByScalar(0.5); // Adjust buffer size as needed
@@ -207,6 +213,29 @@ function checkCollisions() {
             collisionCooldown = false;
         }, 1000); // 1-second cooldown
     }
+
+    // Check collision between unselected pets and house
+    unselectedPetsBoundingBoxes.forEach((boundingBox, index) => {
+        if (boundingBox.intersectsBox(houseBoundingBox)) {
+            // Handle collision for unselected pet
+            const direction = unselectedPets[index].position.clone().sub(importHouse.position).normalize();
+            unselectedPets[index].position.add(direction.multiplyScalar(0.5)); // Adjust as needed
+        }
+    });
+
+    // Optional: Check collisions between pets themselves (if needed)
+    unselectedPetsBoundingBoxes.forEach((boundingBox1, i) => {
+        unselectedPetsBoundingBoxes.forEach((boundingBox2, j) => {
+            if (i !== j && boundingBox1.intersectsBox(boundingBox2)) {
+                // Handle collision logic between unselected pets (e.g., adjust their positions)
+                const direction = unselectedPets[i].position
+                    .clone()
+                    .sub(unselectedPets[j].position)
+                    .normalize();
+                unselectedPets[i].position.add(direction.multiplyScalar(0.2)); // Adjust as needed
+            }
+        });
+    });
 }
 
 
@@ -223,6 +252,7 @@ function startGame(selectedPet) {
     // Bounding Boxes
     petBoundingBox = new THREE.Box3().setFromObject(chosenPet);
     houseBoundingBox = new THREE.Box3().setFromObject(importHouse);
+    unselectedPetsBoundingBoxes = unselectedPets.map((pet) => new THREE.Box3().setFromObject(pet));
 
     setupBoundingBoxes();
 

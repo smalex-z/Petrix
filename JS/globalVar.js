@@ -20,7 +20,7 @@ var blinkTime = {
 // Planets
 const earthRadius = 48;
 const orbitDistance = 140; // Adjust the distance closer to the center
-const planetSpeed = 0.4; // Set the default speed to .02, testing set to .2
+const planetSpeed = 0.04; // Set the default speed to .02, testing set to .2
 const moonRadius = 4;
 const sunRadius = 8;
 

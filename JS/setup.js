@@ -1,5 +1,8 @@
+import * as THREE from 'three';
+import { startGame, chosenPet } from '../main.js';
 import { scene, renderer } from './globalVar.js';
-import { startGame } from '../main.js';
+import { houseBoundingBox, importHouse } from './house.js';
+
 
 export function createPetSelectionPopup() {
     const popup = document.getElementById('pet-selection-popup');
@@ -44,4 +47,36 @@ export function createPetSelectionPopup() {
 // Pausing the game until pet is selected
 export function pauseBeforeSelection() {
     renderer.setAnimationLoop(null);
+}
+
+//Bounding Box Visibility
+let isBoundingBoxVisible = false; // Tracks if bounding boxes are visible
+let petBoxHelper, houseBoxHelper; // BoxHelpers for the pet and house
+export function setupBoundingBoxes() {
+    // Create bounding box helpers
+    petBoxHelper = new THREE.BoxHelper(chosenPet, 0xff0000); // Red for pet
+    houseBoxHelper = new THREE.BoxHelper(importHouse, 0x0000ff); // Blue for house
+
+    // Initially hide the helpers
+    petBoxHelper.visible = false;
+    houseBoxHelper.visible = false;
+
+    // Add helpers to the scene
+    scene.add(petBoxHelper);
+    scene.add(houseBoxHelper);
+}
+
+
+export function updateBoundingBoxes() {
+    // Update the bounding boxes dynamically
+    petBoxHelper.update();
+    houseBoxHelper.update();
+}
+
+export function toggleBoundingBoxes() {
+    isBoundingBoxVisible = !isBoundingBoxVisible; // Toggle visibility state
+
+    // Toggle visibility of the helpers
+    petBoxHelper.visible = isBoundingBoxVisible;
+    houseBoxHelper.visible = isBoundingBoxVisible;
 }

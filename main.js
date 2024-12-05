@@ -13,7 +13,7 @@ import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from 
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 
-import { createPetSelectionPopup, pauseBeforeSelection  } from './JS/setup.js';
+import { createPetSelectionPopup, pauseBeforeSelection, setupBoundingBoxes, toggleBoundingBoxes, updateBoundingBoxes } from './JS/setup.js';
 
 import { sunLight, moonLight, sunTarget, moonTarget } from './JS/lighting.js';
 import { house } from './JS/house.js'; // house 也需要定义
@@ -35,7 +35,7 @@ const blinkInterval = 500; // 闪烁间隔，单位为毫秒
 let clock = new THREE.Clock();
 // Create additional variables as needed here
 
-let chosenPet;
+export let chosenPet;
 
 
 function performRandomAction() {
@@ -167,6 +167,13 @@ playButton.addEventListener('click', () => {
     }
 });
 
+// Add a key event listener for the toggle
+window.addEventListener('keydown', (event) => {
+    if (event.key === '`') { // Backtick key
+        toggleBoundingBoxes();
+    }
+});
+
 
 
 let lifeDecreaseInterval = null; // 存储生命值减少的定时器
@@ -268,9 +275,6 @@ document.addEventListener('keydown', (event) => handleCameraAttachment(event, pl
 
 pauseBeforeSelection();
 createPetSelectionPopup();
-let isCollisionResolved = false; // Track if collision is resolved
-
-
 
 let isInSafeZone = false; // Tracks if the pet is in the safe zone
 let safeZoneRadius = 2.5; // Minimum distance pet must maintain from the house
@@ -293,9 +297,11 @@ function checkCollisions() {
         const direction = chosenPet.position.clone().sub(importHouse.position).normalize();
 
         // Move the pet away from the house
-        const moveDistance = 2.0; // Adjust the distance to fully clear the buffer zone
-        chosenPet.position.add(direction.multiplyScalar(moveDistance));
-
+        const moveAwayDistance = 4.0; // Adjust the distance to fully clear the buffer zone
+        chosenPet.position.lerp(
+            chosenPet.position.clone().add(direction.multiplyScalar(moveAwayDistance)),
+            0.1 // Adjust the lerp factor for smoothness
+        );
         // Set the safe zone and activate cooldown
         isInSafeZone = true;
         collisionCooldown = true;
@@ -500,6 +506,7 @@ function startGame(selectedPet) {
 
     petBoundingBox = new THREE.Box3().setFromObject(chosenPet);
     chosenPet.position.set(importHouse.position.x - 2, importHouse.position.y, importHouse.position.z);
+    setupBoundingBoxes();
 
     animate(); // Resume rendering
 
@@ -538,6 +545,7 @@ function animate() {
         lastActionTime = time;
     }
 
+    updateBoundingBoxes();
     checkCollisions();
    
 
@@ -646,8 +654,6 @@ function animate() {
         // Update the camera position based on attachment
         updateCameraPosition(index, planet, model_transform);
     });
-
-
 
     // Update controls only when the camera is not attached
     if (controls.enabled) {

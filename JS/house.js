@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { scene, earthRadius, housePosition } from './globalVar.js';
-import { updatePetStatusDisplay } from './status.js';
 import { sheep } from './sheep';
 import { dog } from './dog';
 import { chicken } from './chickens.js';

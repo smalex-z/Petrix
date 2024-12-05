@@ -73,17 +73,8 @@ function movePet(distance) {
     }
 }
 
-function adjustPetHeight() {
-    const x = chosenPet.position.x;
-    const z = chosenPet.position.z;
-
-    const y = Math.sqrt(Math.max(0, earthRadius * earthRadius - x * x - z * z));
-
-    chosenPet.position.y = y + 0.2; //0.2 是羊离地面的高度
-}
-
 function setMoving(bool) {
     isMoving = bool;
 }
 
-export { performRandomAction, movePet, adjustPetHeight, isMoving, setMoving, targetPosition};
+export { performRandomAction, movePet, isMoving, setMoving, targetPosition};

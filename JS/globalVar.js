@@ -63,7 +63,7 @@ export function initializeUnselectedPets(selectedPet) {
     scene.add(chosenPet);
 
     unselectedPets.forEach(pet => {
-        adjustItemHeight(pet, -.2);
+        adjustItemHeight(pet, -.25);
         scene.add(pet);
     });
 }

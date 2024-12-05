@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, 
-    MIN_STATUS, MAX_STATUS, chosenPet, initializeUnselectedPets  } from './JS/globalVar.js';
+    MIN_STATUS, MAX_STATUS, chosenPet, initializeUnselectedPets,  
+    adjustItemHeight} from './JS/globalVar.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 import { createPetSelectionPopup, pauseBeforeSelection, setupBoundingBoxes, toggleBoundingBoxes, updateBoundingBoxes } from './JS/setup.js';
 import { sunLight, moonLight, sunTarget, moonTarget, updateBackgroundColor } from './JS/lighting.js';
-import { performRandomAction, movePet, adjustPetHeight, isMoving, setMoving, targetPosition } from './JS/movement.js';;
+import { performRandomAction, movePet, isMoving, setMoving, targetPosition } from './JS/movement.js';;
 
 import { importHouse, house } from './JS/house.js';
 import { planets, orbitDistance } from './JS/planets.js';
@@ -365,7 +366,7 @@ function animate() {
         }
 
         // Adjust height based on the environment
-        adjustPetHeight();
+        adjustItemHeight(chosenPet, -.25);
     }
     // Modify the flashing logic
     if (iconsToShow.length > 0) {

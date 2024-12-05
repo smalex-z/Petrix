@@ -98,6 +98,7 @@ function adjustItemHeight(item, offset) {
     item.position.y = y;
 }
 
+
 export {
     scene, camera, renderer, controls, defaultCamPos, defaultLook, housePosition, blinkTime,
     iconIndex, earthRadius, sunRadius, moonRadius, orbitDistance, planetSpeed, MAX_STATUS, MIN_STATUS,

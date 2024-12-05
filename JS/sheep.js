@@ -3,6 +3,8 @@ const earthRadius = 48;
 
 // 创建一个对象来表示羊
 const sheep = new THREE.Group();
+sheep.isMoving = false; // Add a custom property to track movement
+sheep.targetPosition = new THREE.Vector3(); // 目标位置
 
 // 创建身体
 const bodyGeometry = new THREE.BoxGeometry(2, 1, 1); // 宽度、高度、深度

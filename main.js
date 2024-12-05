@@ -1,15 +1,15 @@
 import * as THREE from 'three';
 import { scene, camera, renderer, controls, earthRadius, blinkTime, iconIndex, 
-    MIN_STATUS, MAX_STATUS, chosenPet, initializeUnselectedPets,  
+    MIN_STATUS, MAX_STATUS, chosenPet, unselectedPets, initializeUnselectedPets,  
     adjustItemHeight} from './JS/globalVar.js';
 import { translationMatrix, rotationMatrixX, rotationMatrixY, rotationMatrixZ } from './JS/utils.js';
 import { handleCameraAttachment, updateCameraPosition } from './JS/cameraControl.js';
 import { createPetSelectionPopup, pauseBeforeSelection, setupBoundingBoxes, toggleBoundingBoxes, updateBoundingBoxes } from './JS/setup.js';
 import { sunLight, moonLight, sunTarget, moonTarget, updateBackgroundColor } from './JS/lighting.js';
-import { performRandomAction, movePet, isMoving, setMoving, targetPosition } from './JS/movement.js';;
+import { performRandomAction, moveChosenPet } from './JS/movement.js';;
 
 import { importHouse, house } from './JS/house.js';
-import { planets, orbitDistance } from './JS/planets.js';
+import { planets, orbitDistance, updatePlanetMaterialUniforms } from './JS/planets.js';
 import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from './JS/status.js';
 import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
 
@@ -211,89 +211,6 @@ function checkCollisions() {
 
 
 
-// This function is used to update the uniform of the planet's materials in the animation step. No need to make any change
-function updatePlanetMaterialUniforms(planet) {
-    const material = planet.material;
-    if (!material.uniforms) return;
-
-    const uniforms = material.uniforms;
-
-    const numLights = 1;
-    const lights = scene.children.filter(child => child.isLight).slice(0, numLights);
-    // Ensure we have the correct number of lights
-    if (lights.length < numLights) {
-        console.warn(`Expected ${numLights} lights, but found ${lights.length}. Padding with default lights.`);
-    }
-
-    // Update model_transform and projection_camera_model_transform
-    planet.updateMatrixWorld();
-    camera.updateMatrixWorld();
-
-    uniforms.model_transform.value.copy(planet.matrixWorld);
-    uniforms.projection_camera_model_transform.value.multiplyMatrices(
-        camera.projectionMatrix,
-        camera.matrixWorldInverse
-    ).multiply(planet.matrixWorld);
-
-    // Update camera_center
-    uniforms.camera_center.value.setFromMatrixPosition(camera.matrixWorld);
-
-    // Update squared_scale (in case the scale changes)
-    const scale = planet.scale;
-    uniforms.squared_scale.value.set(
-        scale.x * scale.x,
-        scale.y * scale.y,
-        scale.z * scale.z
-    );
-
-    // Update light uniforms
-    uniforms.light_positions_or_vectors.value = [];
-    uniforms.light_colors.value = [];
-    uniforms.light_attenuation_factors.value = [];
-
-    for (let i = 0; i < numLights; i++) {
-        const light = lights[i];
-        if (light) {
-            let position = new THREE.Vector4();
-            if (light.isDirectionalLight) {
-                // For directional lights
-                const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(light.quaternion);
-                position.set(direction.x, direction.y, direction.z, 0.0);
-            } else if (light.position) {
-                // For point lights
-                position.set(light.position.x, light.position.y, light.position.z, 1.0);
-            } else {
-                // Default position
-                position.set(0.0, 0.0, 0.0, 1.0);
-            }
-            uniforms.light_positions_or_vectors.value.push(position);
-
-            // Update light color
-            const color = new THREE.Vector4(light.color.r, light.color.g, light.color.b, 1.0);
-            uniforms.light_colors.value.push(color);
-
-            // Update attenuation factor
-            let attenuation = 0.0;
-            if (light.isPointLight || light.isSpotLight) {
-                const distance = light.distance || 1000.0; // Default large distance
-                attenuation = 1.0 / (distance * distance);
-            } else if (light.isDirectionalLight) {
-                attenuation = 0.0; // No attenuation for directional lights
-            }
-            // Include light intensity
-            const intensity = light.intensity !== undefined ? light.intensity : 1.0;
-            attenuation *= intensity;
-
-            uniforms.light_attenuation_factors.value.push(attenuation);
-        } else {
-            // Default light values
-            uniforms.light_positions_or_vectors.value.push(new THREE.Vector4(0.0, 0.0, 0.0, 0.0));
-            uniforms.light_colors.value.push(new THREE.Vector4(0.0, 0.0, 0.0, 1.0));
-            uniforms.light_attenuation_factors.value.push(0.0);
-        }
-    }
-}
-
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -311,6 +228,7 @@ function startGame(selectedPet) {
 
     animate(); // Resume rendering
 }
+
 renderer.shadowMap.enabled = true; // 启用阴影映射
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 使用柔和阴影
 
@@ -345,29 +263,33 @@ function animate() {
         lastActionTime = time;
     }
 
+    moveChosenPet();
     updateBoundingBoxes();
     checkCollisions();
    
 
-    // Update the location of sheep
-    if (isMoving) {
-        checkCollisions();
-        const delta = targetPosition.clone().sub(chosenPet.position);
-        const distanceToTarget = delta.length();
+    // Update the location of pet
+    unselectedPets.forEach(pet => {
+        if (pet.isMoving) {
+            checkCollisions();
+            const delta = pet.targetPosition.clone().sub(pet.position);
+            const distanceToTarget = delta.length();
 
-        if (distanceToTarget > moveSpeed) {
-            // Normalize direction and move
-            delta.normalize().multiplyScalar(moveSpeed);
-            chosenPet.position.add(delta);
-        } else {
-            // Snap to the target position
-            chosenPet.position.copy(targetPosition);
-            setMoving(false); // Stop moving
+            if (distanceToTarget > moveSpeed) {
+                // Normalize direction and move
+                delta.normalize().multiplyScalar(moveSpeed);
+                pet.position.add(delta);
+            } else {
+                // Snap to the target position
+                pet.position.copy(pet.targetPosition);
+                pet.isMoving = false; // Stop moving
+            }
+
+            // Adjust height based on the environment
+            adjustItemHeight(pet, -.25);
         }
+    });
 
-        // Adjust height based on the environment
-        adjustItemHeight(chosenPet, -.25);
-    }
     // Modify the flashing logic
     if (iconsToShow.length > 0) {
         let now = Date.now();

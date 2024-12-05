@@ -3,6 +3,8 @@ const earthRadius = 48;
 
 // 创建一个对象来表示鸡
 const chicken = new THREE.Group();
+chicken.isMoving = false; // Add a custom property to track movement
+chicken.targetPosition = new THREE.Vector3(); // 目标位置
 
 // 创建身体
 const bodyGeometry = new THREE.BoxGeometry(1, 1.5, 1); // 宽度、高度、深度

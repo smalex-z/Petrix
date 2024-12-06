@@ -334,8 +334,6 @@ function animate() {
                 // 当前图标不可见，切换到下一个图标并显示
                 iconIndex.currentIconIndex = (iconIndex.currentIconIndex + 1) % iconsToShow.length;
                 iconsToShow[iconIndex.currentIconIndex].visible = true;
-                console.log("flash please")
-                console.log(iconsToShow[iconIndex.currentIconIndex].position)
             }
             // 重置计时器
             blinkTime.lastBlinkTime = now;

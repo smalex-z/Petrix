@@ -1,15 +1,13 @@
 import * as THREE from 'three';
-import { sheep } from './sheep.js'; // Assuming pet.js exports sheep
-import { dog } from './dog.js';
-import { chicken } from './chickens.js';
+import { chosenPet } from './globalVar.js';
 
 // 创建纹理加载器
 const textureLoader = new THREE.TextureLoader();
 
 // 加载图标纹理
-const hungerTexture = textureLoader.load('images/hunger.png');
-const hygieneTexture = textureLoader.load('images/hygiene.png');
-const happinessTexture = textureLoader.load('images/happiness.png');
+const hungerTexture = textureLoader.load('../assets/images/hunger.png');
+const hygieneTexture = textureLoader.load('../assets/images/hygiene.png');
+const happinessTexture = textureLoader.load('../assets/images/happiness.png');
 
 // 创建 SpriteMaterial
 const hungerMaterial = new THREE.SpriteMaterial({ map: hungerTexture });
@@ -33,18 +31,12 @@ hygieneSprite.scale.set(iconScale, iconScale, iconScale);
 happinessSprite.scale.set(iconScale, iconScale, iconScale);
 
 // 将图标添加到羊的头上
-sheep.add(hungerSprite);
-sheep.add(hygieneSprite);
-sheep.add(happinessSprite);
-
-dog.add(hungerSprite);
-dog.add(hygieneSprite);
-dog.add(happinessSprite);
-
-chicken.add(hungerSprite);
-chicken.add(hygieneSprite);
-chicken.add(happinessSprite);
-
+export function addSprite(){
+    console.log("sprites added");
+    chosenPet.add(hungerSprite);
+    chosenPet.add(hygieneSprite);
+    chosenPet.add(happinessSprite);
+}
 
 // 设置图标的位置（羊头的上方）
 const iconOffsetY = 2; // 根据羊的尺寸调整

@@ -11,7 +11,7 @@ import { performRandomAction, moveChosenPet } from './JS/movement.js';;
 import { importHouse, house } from './JS/house.js';
 import { planets, orbitDistance, updatePlanetMaterialUniforms } from './JS/planets.js';
 import { petStatus, updatePetStatusDisplay, updatePetStatus, iconsToShow } from './JS/status.js';
-import { hungerSprite, hygieneSprite, happinessSprite } from './JS/icons.js';
+import { hungerSprite, hygieneSprite, happinessSprite, addSprite } from './JS/icons.js';
 
 
 
@@ -255,6 +255,7 @@ function startGame(selectedPet) {
     unselectedPetsBoundingBoxes = unselectedPets.map((pet) => new THREE.Box3().setFromObject(pet));
 
     setupBoundingBoxes();
+    addSprite();
 
     animate(); // Resume rendering
 }
@@ -323,6 +324,7 @@ function animate() {
     // Modify the flashing logic
     if (iconsToShow.length > 0) {
         let now = Date.now();
+
         if (now - blinkTime.lastBlinkTime >= blinkInterval) {
             // 切换可见性
             if (iconsToShow[iconIndex.currentIconIndex].visible) {
@@ -332,6 +334,8 @@ function animate() {
                 // 当前图标不可见，切换到下一个图标并显示
                 iconIndex.currentIconIndex = (iconIndex.currentIconIndex + 1) % iconsToShow.length;
                 iconsToShow[iconIndex.currentIconIndex].visible = true;
+                console.log("flash please")
+                console.log(iconsToShow[iconIndex.currentIconIndex].position)
             }
             // 重置计时器
             blinkTime.lastBlinkTime = now;
@@ -339,7 +343,7 @@ function animate() {
     }
 
 
-    // 更新图标的朝向，使其面向摄像机
+    // Update the orientation of the icon, so that it faces the camera
     [hungerSprite, hygieneSprite, happinessSprite].forEach(sprite => {
         sprite.quaternion.copy(camera.quaternion);
     });

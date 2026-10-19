@@ -1,90 +1,86 @@
-# Petrix - A Digital Pet Matrix
+# Petrix — A Digital Pet Matrix
 
-A virtual pet simulation built using **Three.js.** The simulation includes an interactive 3D environment with various animated objects, such as a virtual pet sheep that can perform random actions, display needs icons (e.g., hunger, hygiene, happiness), and has a day-night cycle that dynamically changes the background color.
+An interactive 3D virtual pet simulation built with **Three.js and JavaScript**. Choose a sheep, dog, or chicken, explore a miniature world, and care for your pet while the other animals move autonomously.
 
-![image-0](docs/start.png)
-![image-0](docs/overview1.png)
-![image-0](docs/overview2.png)
-
-## Demo / Getting Started
-
-Clone the repository:
-
-```bash
-git clone https://github.com/smalex-z/Petrix
-```
-
-```bash 
-npm init -y
-```
-We will install `Three.js` and `vite` by running:
-```bash
-# three.js
-npm install --save three
-
-# vite
-npm install --save-dev vite
-
-# run
-npx vite
-```
-
----
-
-## Controls:
-
-Mouse, Keyboard
-
-You can use the mouse to interact with the pet- open the menu to feed, bathe, or play with the pet.
-Use WASD in order to move your selected pet around! The other two pets are controlled by AI.
-Using \` will show the bounding boxes of the objects on the screen,
-
----
+![Pet selection screen](docs/start.png)
 
 ## Features
-**3D Virtual Pet:** A character that is controlled by the player, and responds to user interactions (feeding, cleaning, playing). Has a bounding box.
 
-**3D AI  Pet:** A character that performs random actions, moves within a defined radius, Also has a bounding box
+- **Pet care:** Feed, clean, and play with your selected pet. Life, hunger, hygiene, and happiness change over time, with visual indicators for unmet needs.
+- **Movement and animation:** Control your pet with the keyboard while unselected animals perform randomized actions.
+- **Collision handling:** Bounding boxes separate animals and keep them out of the house; a debug view exposes collision bounds.
+- **Animated environment:** Orbiting celestial bodies, changing background colors, and moving directional lights create a day/night cycle.
+- **Graphics:** Custom shader code, textured objects, shadows, and imported glTF scenery.
+- **Camera controls:** Orbit the scene or attach the camera to an orbiting object.
 
-**Dynamic Status System:** Tracks pet’s life, hunger, hygiene, and happiness, which degrade over time and can be restored by interacting with the pet.
-Interactive Needs Icons: Displays icons for the pet’s needs (hunger, hygiene, happiness) above its head, with a blinking effect.
+The autonomous animals use programmed randomized behavior; this project does not train a machine-learning model.
 
-**Day/Night Cycle:** Automatically transitions the background between day and night based on planetary rotations.
+## Run locally
 
-**Planets Orbit:** Simulates a simple solar system with planets orbiting a green environment in the background.
+Install Node.js compatible with Vite 5 (Node 18+), then run:
 
-**Customizable Controls:** Orbit controls for camera movement, and the option to lock the camera onto planets for a close-up view.
-
----
-## Advanced Features
-
-**Custom shadows/shaders** Shadows are created on every object in the scene. The light is directed from the Sun onto the scene, causing the shadows. The light source moves with the sun, and the shadow across the scene are moved. The moon also reflects the sunlight, creating slight shadows at night too. The shadow of the earth on the moon also creates a nice crecent shape.
-
-**Bounding Box** Every animal in the scene is bound by a Bounding box. This helps prevent collisions (or more accurately, with our code, seperates them from the collision.) The house is the biggest bounding box- no animal or pet is able to enter the bounding box of the house.
-
-
----
-
-## Project Structure
-
+```bash
+git clone https://github.com/smalex-z/Petrix.git
+cd Petrix
+npm ci
+npm run dev
 ```
-.
-├── assets/
-│   ├── css/                # CSS folder
-│   ├── images/             # Images Folder
-│   ├── stardew_valley_cabin# Imported Cabin Model
-│   ├── pine-tree/          # Imported Pine Tree Model
-├── JS/
-│   ├── pet.js              # Defines the virtual pet object and structure.
-│   ├── sceneSetup.js       # Sets up the Three.js scene, camera, renderer, and controls.
-│   ├── planets.js          # Creates and manages planets and their orbit animations.
-│   ├── status.js           # Manages pet status, icon display, and status update intervals.
-│   ├── icons.js            # Creates and positions icons for hunger, hygiene, and happiness.
-│   ├── movement.js         # Contains functions for pet movement and action logic.
-│   ├── dayNight.js         # Manages the day-night cycle based on planet positions.
-│   ├── lighting.js         # Sets up ambient and directional lighting.
-│   ├── utils.js            # Contains utility functions for matrix transformations.
-│   └── more                # More JS files
-├── main.js                 # Main script to manage rendering and animations.
-└── index.html              # Main HTML file with controls and canvas for rendering.
+
+Open the local URL printed by Vite, usually **http://localhost:5173**. No backend, database, or account is required. Use a browser with WebGL support.
+
+Dependencies are already declared in `package.json` and pinned in `package-lock.json`; no project initialization is needed.
+
+## Controls
+
+| Input | Action |
+| --- | --- |
+| Pet selection screen | Choose the animal you control |
+| W / A / S / D | Move the selected pet |
+| Mouse and scroll wheel | Orbit and zoom using the scene camera controls |
+| Interaction menu | Feed, clean, or play with your pet |
+| Backtick (`) | Toggle bounding-box visualization |
+| 3 / 4 | Attach the camera to one of the orbiting objects |
+| 0 | Restore the default camera |
+
+![Pet care and environment overview](docs/overview1.png)
+![Additional scene view](docs/overview2.png)
+
+## Project structure
+
+```text
+JS/
+  globalVar.js      Shared scene, renderer, camera, and pet state
+  setup.js          Pet selection, scenery, and bounding boxes
+  sheep.js          Sheep model
+  dog.js            Dog model
+  chickens.js       Chicken model
+  movement.js       Keyboard movement and randomized actions
+  status.js         Pet needs and status display
+  icons.js          Needs indicators
+  planets.js        Celestial objects and orbital transforms
+  lighting.js       Lighting and background transitions
+  shaders.js        Custom shader definitions
+  cameraControl.js  Camera attachment and reset
+  house.js          Cabin loading and collision bounds
+  utils.js          Matrix transformation helpers
+assets/             Styles, images, textures, and glTF models
+docs/               Project screenshots and verification notes
+main.js             Interaction handlers and animation loop
+index.html          Browser entry point
 ```
+
+## Development and verification
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Run the local Vite server |
+| `npm run build` | Bundle the application into `dist/` |
+| `npm run preview` | Preview an existing build |
+
+See [verification notes](docs/verification.md) for runtime checks and asset-path limitations. The existing `npm test` command is a placeholder, not an automated test suite.
+
+## Team and assets
+
+Developed as a collaborative UCLA CS 174 project. Individual contributions are recorded in the repository history.
+
+The cabin is **Stardew valley Cabin** by **MoebiousII**. Its source, attribution, and CC-BY-NC-4.0 terms are preserved in the [included asset license](assets/stardew_valley_cabin/license.txt). Imported artwork retains its own licensing terms.

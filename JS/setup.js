@@ -105,7 +105,7 @@ export function createTrees() {
 
 
     // Load the tree model once and replicate
-    loader.load('../assets/pine-tree/scene_textured.gltf', function (gltf) {
+    loader.load('./assets/pine-tree/scene_textured.gltf', function (gltf) {
         for (let j = 0; j < 4; j++){
             for (let i = 0; i < treeCount[j]; i++) {
                 const angle = (i / treeCount[j]) * Math.PI * 2; // Angle in radians for each tree

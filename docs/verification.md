@@ -12,6 +12,14 @@
 
 ## Build and deployment scope
 
-`npm run build` checks bundling, but does not verify all runtime assets or visual behavior. Several images and glTF resources are loaded using string paths such as `../assets/...`. Those references need a separate asset-packaging review before publishing `dist/` or deploying under a subdirectory. Test `npm run preview` with the browser network panel before deployment.
+`npm run build` bundles the application and copies runtime images and complete glTF resource folders into `dist/assets/`. `vite.config.mjs` keeps stable filenames for loader references and uses relative bundle URLs. Runtime loader paths are relative to the document directory. Serve directory URLs with a trailing slash when hosting under a subdirectory.
 
-There is no implemented automated test suite; `npm test` retains its existing placeholder failure. Screenshots in the README are the project's existing screenshots, not evidence of a new runtime test.
+### Verified on 2026-10-29
+
+- Production build completed; Vite still reports a large JavaScript chunk warning.
+- Verified 34 external glTF buffer/texture references and nine runtime images exist in the build output.
+- In Chrome via `npm run preview`, selected Sheep and entered the rendered scene; cabin, trees, animals, lighting, and shadows were visible.
+- Feed changed hunger from 1 to 0. Bathe and Play restored hygiene and happiness from 99 to 100.
+- No warning/error console entries were captured during this smoke check.
+
+This check does not certify all movement, collision, camera shortcuts, devices, or hosting configurations. There is no implemented automated test suite; `npm test` retains its existing placeholder failure. README screenshots remain the original project screenshots.

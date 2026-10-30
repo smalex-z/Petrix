@@ -48,7 +48,7 @@ house.position.set(0, 0.5, 0); // 调整屋子的高度和位置
 const loader = new GLTFLoader();
 let importHouse;
 
-loader.load('../assets/stardew_valley_cabin/scene.gltf', function (gltf) {
+loader.load('./assets/stardew_valley_cabin/scene.gltf', function (gltf) {
     //House 
     importHouse = gltf.scene; // Get the house object
     importHouse.scale.set(2, 2, 2); // Double the size along all axes

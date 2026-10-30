@@ -5,9 +5,9 @@ import { chosenPet } from './globalVar.js';
 const textureLoader = new THREE.TextureLoader();
 
 // 加载图标纹理
-const hungerTexture = textureLoader.load('../assets/images/hunger.png');
-const hygieneTexture = textureLoader.load('../assets/images/hygiene.png');
-const happinessTexture = textureLoader.load('../assets/images/happiness.png');
+const hungerTexture = textureLoader.load('./assets/images/hunger.png');
+const hygieneTexture = textureLoader.load('./assets/images/hygiene.png');
+const happinessTexture = textureLoader.load('./assets/images/happiness.png');
 
 // 创建 SpriteMaterial
 const hungerMaterial = new THREE.SpriteMaterial({ map: hungerTexture });
